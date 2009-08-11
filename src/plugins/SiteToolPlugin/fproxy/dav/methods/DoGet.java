@@ -16,7 +16,6 @@
 package plugins.SiteToolPlugin.fproxy.dav.methods;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 import freenet.clients.http.ToadletContext;
@@ -32,6 +31,7 @@ import plugins.SiteToolPlugin.fproxy.dav.api.IStoredObject;
 import plugins.SiteToolPlugin.fproxy.dav.api.ITransaction;
 import plugins.SiteToolPlugin.fproxy.dav.api.IWebDAVStore;
 import plugins.SiteToolPlugin.fproxy.dav.api.WebDAVStatus;
+import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 
 public class DoGet extends DoHead {
 
@@ -68,7 +68,7 @@ public class DoGet extends DoHead {
     }
 
     @Override
-	protected void folderBody(ITransaction transaction, String path, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException {
+	protected void folderBody(ITransaction transaction, String path, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
 
         IStoredObject so = _store.getStoredObject(transaction, path);
         if (so == null) {

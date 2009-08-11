@@ -17,9 +17,11 @@
  *
  */
 
-package plugins.SiteToolPlugin.fproxy.dav.api;
+package plugins.SiteToolPlugin.fproxy.dav.sampleimpl;
 
 import java.util.Date;
+
+import plugins.SiteToolPlugin.fproxy.dav.api.IStoredObject;
 
 public class SimpleStoredObject implements IStoredObject {
 

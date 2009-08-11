@@ -9,6 +9,8 @@ import plugins.SiteToolPlugin.fproxy.dav.api.IMimeTyper;
 import plugins.SiteToolPlugin.fproxy.dav.api.IResourceLocks;
 import plugins.SiteToolPlugin.fproxy.dav.api.ITransaction;
 import plugins.SiteToolPlugin.fproxy.dav.api.IWebDAVStore;
+import plugins.SiteToolPlugin.fproxy.dav.api.WebDAVStatus;
+import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoCopy;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoDelete;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoGet;
@@ -160,20 +162,25 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 
 	private void handle(METHODS method, ITransaction transaction, URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException, RedirectException {
 
-		switch (method) {
-			case GET:		doGet.handle(_transaction, uri, req, ctx); break;
-			case OPTIONS:	doOptions.handle(_transaction, uri, req, ctx); break;
-			case PROPFIND:	doPropfind.handle(_transaction, uri, req, ctx); break;
-			case PROPPATCH:	doProppatch.handle(_transaction, uri, req, ctx); break;
-			case MKCOL:		doMkcol.handle(_transaction, uri, req, ctx); break;
-			case COPY:		doCopy.handle(_transaction, uri, req, ctx); break;
-			case MOVE:		doMove.handle(_transaction, uri, req, ctx); break;
-			case LOCK:		doLock.handle(_transaction, uri, req, ctx); break;
-			case UNLOCK:	doUnlock.handle(_transaction, uri, req, ctx); break;
-			case HEAD:		doHead.handle(_transaction, uri, req, ctx); break;
-			case PUT:		doPut.handle(_transaction, uri, req, ctx); break;
-			case DELETE:	doDelete.handle(_transaction, uri, req, ctx); break;
-			default:		doNotImplemented.handle(_transaction, uri, req, ctx);
+		try {
+			switch (method) {
+				case GET:		doGet.handle(_transaction, uri, req, ctx); break;
+				case OPTIONS:	doOptions.handle(_transaction, uri, req, ctx); break;
+				case PROPFIND:	doPropfind.handle(_transaction, uri, req, ctx); break;
+				case PROPPATCH:	doProppatch.handle(_transaction, uri, req, ctx); break;
+				case MKCOL:		doMkcol.handle(_transaction, uri, req, ctx); break;
+				case COPY:		doCopy.handle(_transaction, uri, req, ctx); break;
+				case MOVE:		doMove.handle(_transaction, uri, req, ctx); break;
+				case LOCK:		doLock.handle(_transaction, uri, req, ctx); break;
+				case UNLOCK:	doUnlock.handle(_transaction, uri, req, ctx); break;
+				case HEAD:		doHead.handle(_transaction, uri, req, ctx); break;
+				case PUT:		doPut.handle(_transaction, uri, req, ctx); break;
+				case DELETE:	doDelete.handle(_transaction, uri, req, ctx); break;
+				default:		doNotImplemented.handle(_transaction, uri, req, ctx);
+			}
+		} catch (WebDAVException we) {
+			Logger.error(this, "500 Internal failure", we);
+			ctx.sendReplyHeaders(WebDAVStatus.SC_INTERNAL_SERVER_ERROR, WebDAVStatus.getStatusText(WebDAVStatus.SC_INTERNAL_SERVER_ERROR), null, null, -1);
 		}
 
 	}

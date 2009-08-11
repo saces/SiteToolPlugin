@@ -16,7 +16,7 @@
 
 package plugins.SiteToolPlugin.fproxy.dav.exceptions;
 
-public class WebDAVException extends RuntimeException {
+public class WebDAVException extends Exception {
 
     /**
 	 * 

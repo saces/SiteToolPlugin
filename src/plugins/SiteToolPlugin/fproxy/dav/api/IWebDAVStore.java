@@ -25,6 +25,8 @@ package plugins.SiteToolPlugin.fproxy.dav.api;
 
 import java.security.Principal;
 
+import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
+
 import freenet.support.api.Bucket;
 
 
@@ -48,10 +50,11 @@ public interface IWebDAVStore {
      * @param principal
      *      the principal that started this request or <code>null</code> if
      *      there is non available
+     * @throws WebDAVException 
      * 
      * @throws WebdavException
      */
-    ITransaction begin(Principal principal);
+    ITransaction begin(Principal principal) throws WebDAVException;
 
     /**
      * Checks if authentication information passed in is valid. If not throws an
@@ -71,11 +74,12 @@ public interface IWebDAVStore {
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
+     * @throws WebDAVException 
      * 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    void commit(ITransaction transaction);
+    void commit(ITransaction transaction) throws WebDAVException;
 
     /**
      * Indicates that all changes done inside this request shall be undone and
@@ -85,11 +89,12 @@ public interface IWebDAVStore {
      * @param transaction
      *      indicates that the method is within the scope of a WebDAV
      *      transaction
+     * @throws WebDAVException 
      * 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    void rollback(ITransaction transaction);
+    void rollback(ITransaction transaction) throws WebDAVException;
 
     /**
      * Creates a folder at the position specified by <code>folderUri</code>.
@@ -99,10 +104,11 @@ public interface IWebDAVStore {
      *      transaction
      * @param folderUri
      *      URI of the folder
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    void createFolder(ITransaction transaction, String folderUri);
+    void createFolder(ITransaction transaction, String folderUri) throws WebDAVException;
 
     /**
      * Creates a content resource at the position specified by
@@ -113,10 +119,11 @@ public interface IWebDAVStore {
      *      transaction
      * @param resourceUri
      *      URI of the content resource
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    void createResource(ITransaction transaction, String resourceUri);
+    void createResource(ITransaction transaction, String resourceUri) throws WebDAVException;
 
     /**
      * Gets the content of the resource specified by <code>resourceUri</code>.
@@ -127,10 +134,11 @@ public interface IWebDAVStore {
      * @param resourceUri
      *      URI of the content resource
      * @return input stream you can read the content of the resource from
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    Bucket getResourceContent(ITransaction transaction, String resourceUri);
+    Bucket getResourceContent(ITransaction transaction, String resourceUri) throws WebDAVException;
 
     /**
      * Sets / stores the content of the resource specified by
@@ -149,11 +157,12 @@ public interface IWebDAVStore {
      *      character encoding of the resource or <code>null</code> if unknown
      *      or not applicable
      * @return lenght of resource
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
     long setResourceContent(ITransaction transaction, String resourceUri,
-            Bucket content, String contentType, String characterEncoding);
+            Bucket content, String contentType, String characterEncoding) throws WebDAVException;
 
     /**
      * Gets the names of the children of the folder specified by
@@ -166,10 +175,11 @@ public interface IWebDAVStore {
      *      URI of the folder
      * @return a (possibly empty) list of children, or <code>null</code> if the
      *  uri points to a file
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    String[] getChildrenNames(ITransaction transaction, String folderUri);
+    String[] getChildrenNames(ITransaction transaction, String folderUri) throws WebDAVException;
 
     /**
      * Gets the length of the content resource specified by
@@ -183,10 +193,11 @@ public interface IWebDAVStore {
      * @return length of the resource in bytes, <code>-1</code> declares this
      *  value as invalid and asks the adapter to try to set it from the
      *  properties if possible
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    long getResourceLength(ITransaction transaction, String path);
+    long getResourceLength(ITransaction transaction, String path) throws WebDAVException;
 
     /**
      * Removes the object specified by <code>uri</code>.
@@ -196,10 +207,11 @@ public interface IWebDAVStore {
      *      transaction
      * @param uri
      *      URI of the object, i.e. content resource or folder
+     * @throws WebDAVException 
      * @throws WebdavException
      *      if something goes wrong on the store level
      */
-    void removeObject(ITransaction transaction, String uri);
+    void removeObject(ITransaction transaction, String uri) throws WebDAVException;
 
     /**
      * Gets the storedObject specified by <code>uri</code>
@@ -210,7 +222,8 @@ public interface IWebDAVStore {
      * @param uri
      *      URI
      * @return StoredObject
+     * @throws WebDAVException 
      */
-    IStoredObject getStoredObject(ITransaction transaction, String uri);
+    IStoredObject getStoredObject(ITransaction transaction, String uri) throws WebDAVException;
 
 }

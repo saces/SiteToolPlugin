@@ -68,7 +68,7 @@ public class DoHead extends AbstractMethod {
 
 	public void handle(ITransaction transaction, URI uri, HTTPRequest req,
 			ToadletContext ctx) throws ToadletContextClosedException,
-			IOException, RedirectException, LockFailedException {
+			IOException, RedirectException, WebDAVException {
 
         // determines if the uri exists.
 
@@ -188,7 +188,7 @@ public class DoHead extends AbstractMethod {
 
     }
 
-    protected void folderBody(ITransaction transaction, String path, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException {
+    protected void folderBody(ITransaction transaction, String path, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
         // no body for HEAD
     }
 

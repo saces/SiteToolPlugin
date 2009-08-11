@@ -77,7 +77,7 @@ public class DoLock extends AbstractMethod {
         _readOnly = readOnly;
     }
 
-	public void handle(ITransaction transaction, URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException, RedirectException, LockFailedException {
+	public void handle(ITransaction transaction, URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException, RedirectException, WebDAVException {
         if (logDEBUG)
         	Logger.debug(this, "-- " + this.getClass().getName());
 
@@ -136,7 +136,7 @@ public class DoLock extends AbstractMethod {
     }
 
     private void doLock(ITransaction transaction, HTTPRequest req,
-            ToadletContext ctx) throws IOException, LockFailedException, ToadletContextClosedException {
+            ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
 
         IStoredObject so = _store.getStoredObject(transaction, _path);
 
@@ -155,7 +155,7 @@ public class DoLock extends AbstractMethod {
     }
 
     private void doLocking(ITransaction transaction, HTTPRequest req,
-            ToadletContext ctx) throws IOException, ToadletContextClosedException {
+            ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
 
         // Tests if LockObject on requested path exists, and if so, tests
         // exclusivity
@@ -267,8 +267,9 @@ public class DoLock extends AbstractMethod {
     /**
      * Executes the LOCK
      * @throws ToadletContextClosedException 
+     * @throws WebDAVException 
      */
-    private void executeLock(ITransaction transaction, HTTPRequest req, ToadletContext ctx) throws LockFailedException, IOException, ToadletContextClosedException {
+    private void executeLock(ITransaction transaction, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
 
         // Mac OS lock request workaround
         if (_macLockRequest) {
@@ -317,10 +318,11 @@ public class DoLock extends AbstractMethod {
     /**
      * Tries to get the LockInformation from LOCK request
      * @throws ToadletContextClosedException 
+     * @throws WebDAVException 
      */
     private boolean getLockInformation(ITransaction transaction,
             HTTPRequest req, ToadletContext ctx)
-            throws IOException, ToadletContextClosedException {
+            throws IOException, ToadletContextClosedException, WebDAVException {
 
         Node lockInfoNode = null;
         DocumentBuilder documentBuilder = null;

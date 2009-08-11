@@ -33,7 +33,6 @@ import freenet.support.io.FileBucket;
 import plugins.SiteToolPlugin.fproxy.dav.api.IStoredObject;
 import plugins.SiteToolPlugin.fproxy.dav.api.ITransaction;
 import plugins.SiteToolPlugin.fproxy.dav.api.IWebDAVStore;
-import plugins.SiteToolPlugin.fproxy.dav.api.SimpleStoredObject;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 
 /**
@@ -187,7 +186,7 @@ public class LocalFileSystemStore implements IWebDAVStore {
         return file.length();
     }
 
-    public IStoredObject getStoredObject(ITransaction transaction, String uri) {
+    public IStoredObject getStoredObject(ITransaction transaction, String uri) throws WebDAVException {
         SimpleStoredObject so = null;
         File file = new File(_root, uri);
         Logger.error(this, "look for file: " + file.exists() + " - " + file.getAbsolutePath(), new Exception("DEBUG"));

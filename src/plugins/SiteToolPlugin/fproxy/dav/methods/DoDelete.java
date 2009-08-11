@@ -52,7 +52,7 @@ public class DoDelete extends AbstractMethod {
         _readOnly = readOnly;
     }
 
-    public void handle(ITransaction transaction, URI uri, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException {
+    public void handle(ITransaction transaction, URI uri, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
     	if (logDEBUG)
     		Logger.debug(this, "-- " + this.getClass().getName());
 
