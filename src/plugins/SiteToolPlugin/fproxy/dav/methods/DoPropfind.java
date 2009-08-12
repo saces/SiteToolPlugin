@@ -58,20 +58,11 @@ public class DoPropfind extends AbstractMethod {
 		Logger.registerClass(DoPropfind.class);
 	}
 
-    /**
-     * PROPFIND - Specify a property mask.
-     */
-    private static final int FIND_BY_PROPERTY = 0;
-
-    /**
-     * PROPFIND - Display all properties.
-     */
-    private static final int FIND_ALL_PROP = 1;
-
-    /**
-     * PROPFIND - Return property names.
-     */
-    private static final int FIND_PROPERTY_NAMES = 2;
+	enum FindType {
+		BY_PROPERTY, // Specify a property mask.
+		ALL, // Display all properties.
+		NAMES //Return property names.
+	}
 
     private IWebDAVStore _store;
     private IResourceLocks _resourceLocks;
@@ -112,7 +103,7 @@ public class DoPropfind extends AbstractMethod {
                 Vector<String> properties = null;
                 path = getCleanPath(getRelativePath(req));
 
-                int propertyFindType = FIND_ALL_PROP;
+                FindType propertyFindType = FindType.ALL;
                 Node propNode = null;
 
                 if (req.getContentLength() != 0) {
@@ -124,11 +115,11 @@ public class DoPropfind extends AbstractMethod {
 
                         propNode = XMLHelper.findSubElement(rootElement, "prop");
                         if (propNode != null) {
-                            propertyFindType = FIND_BY_PROPERTY;
+                            propertyFindType = FindType.BY_PROPERTY;
                         } else if (XMLHelper.findSubElement(rootElement, "propname") != null) {
-                            propertyFindType = FIND_PROPERTY_NAMES;
+                            propertyFindType = FindType.NAMES;
                         } else if (XMLHelper.findSubElement(rootElement, "allprop") != null) {
-                            propertyFindType = FIND_ALL_PROP;
+                            propertyFindType = FindType.ALL;
                         }
                     } catch (Exception e) {
                     	Logger.error(this, "FIXME", e);
@@ -137,14 +128,13 @@ public class DoPropfind extends AbstractMethod {
                     }
                 } else {
                     // no content, which means it is a allprop request
-                    propertyFindType = FIND_ALL_PROP;
+                    propertyFindType = FindType.ALL;
                 }
 
                 HashMap<String, String> namespaces = new HashMap<String, String>();
                 namespaces.put("DAV:", "D");
 
-                if (propertyFindType == FIND_BY_PROPERTY) {
-                    propertyFindType = 0;
+                if (propertyFindType == FindType.BY_PROPERTY) {
                     properties = XMLHelper.getPropertiesFromXML(propNode);
                 }
 
@@ -200,7 +190,7 @@ public class DoPropfind extends AbstractMethod {
      */
     private void recursiveParseProperties(ITransaction transaction,
             String currentPath, HTTPRequest req, XMLWriter xmlWriter,
-            int propertyFindType, Vector<String> properties, int depth,
+            FindType propertyFindType, Vector<String> properties, int depth,
             String mimeType) throws WebDAVException, IOException {
 
         parseProperties(transaction, req, xmlWriter, currentPath,
@@ -234,7 +224,7 @@ public class DoPropfind extends AbstractMethod {
      *      XML response to the Propfind request
      * @param path
      *      Path of the current resource
-     * @param type
+     * @param propertyFindType
      *      Propfind type
      * @param propertiesVector
      *      If the propfind type is find properties by name, then this Vector
@@ -243,7 +233,7 @@ public class DoPropfind extends AbstractMethod {
      */
     private void parseProperties(ITransaction transaction,
             HTTPRequest req, XMLWriter xmlWriter, String path,
-            int type, Vector<String> propertiesVector, String mimeType)
+            FindType propertyFindType, Vector<String> propertiesVector, String mimeType)
             throws WebDAVException, IOException {
 
         IStoredObject so = _store.getStoredObject(transaction, path);
@@ -287,9 +277,9 @@ public class DoPropfind extends AbstractMethod {
         if (lastSlash != -1)
             resourceName = resourceName.substring(lastSlash + 1);
 
-        switch (type) {
+        switch (propertyFindType) {
 
-        case FIND_ALL_PROP:
+        case ALL:
 
             xmlWriter.writeElement("DAV::propstat", XMLWriter.OPENING);
             xmlWriter.writeElement("DAV::prop", XMLWriter.OPENING);
@@ -333,7 +323,7 @@ public class DoPropfind extends AbstractMethod {
 
             break;
 
-        case FIND_PROPERTY_NAMES:
+        case NAMES:
 
             xmlWriter.writeElement("DAV::propstat", XMLWriter.OPENING);
             xmlWriter.writeElement("DAV::prop", XMLWriter.OPENING);
@@ -366,7 +356,7 @@ public class DoPropfind extends AbstractMethod {
 
             break;
 
-        case FIND_BY_PROPERTY:
+        case BY_PROPERTY:
 
             Vector<String> propertiesNotFound = new Vector<String>();
 
