@@ -92,11 +92,11 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 		SimpleResourceLocks resLocks3 = new SimpleResourceLocks();
 
 		// Invisible pages
-		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/downloads", sitesToadlet, store1, resLocks1);
+		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/downloads", sitesToadlet, store1, resLocks1, false);
 		webInterface.registerInvisible(davToadlet1, PLUGIN_URI + "/DAV/downloads");
-		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/tempdl", sitesToadlet, store2, resLocks2);
+		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/tempdl", sitesToadlet, store2, resLocks2, true);
 		webInterface.registerInvisible(davToadlet2, PLUGIN_URI + "/DAV/tempdl");
-		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/siteedit", sitesToadlet, store3, resLocks3);
+		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/siteedit", sitesToadlet, store3, resLocks3, true);
 		webInterface.registerInvisible(davToadlet3, PLUGIN_URI + "/DAV/SiteEdit");
 	}
 

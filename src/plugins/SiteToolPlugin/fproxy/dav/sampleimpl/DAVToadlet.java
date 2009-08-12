@@ -71,17 +71,18 @@ public class DAVToadlet extends WebInterfaceToadlet {
 
 	private int nocontentLenghHeaders;
 
-	private boolean READ_ONLY;
+	private final boolean _readOnly;
 
 	private boolean lazyFolderCreationOnPut;
 
 	private ITransaction _transaction;
 
-	public DAVToadlet(PluginContext stCtx, String pluginURL, String pageName, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
+	public DAVToadlet(PluginContext stCtx, String pluginURL, String pageName, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks, boolean readOnly) {
 		super(stCtx, pluginURL, pageName);
 		_showAsToadlet = showAsToadlet;
 		_store = store;
 		_resLocks = resLocks;
+		_readOnly = readOnly;
 		init();
 	}
 
@@ -94,17 +95,17 @@ public class DAVToadlet extends WebInterfaceToadlet {
         };
         doGet = new DoGet(this, _store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
         doHead = new DoHead(this, _store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
-        doDelete = new DoDelete(this, _store, _resLocks, READ_ONLY);
-        doCopy = new DoCopy(this, _store, _resLocks, doDelete, READ_ONLY);
-        doLock = new DoLock(this, _store, _resLocks, READ_ONLY);
-        doUnlock = new DoUnlock(this, _store, _resLocks, READ_ONLY);
-        doMove = new DoMove(this, _resLocks, doDelete, doCopy, READ_ONLY);
-        doMkcol = new DoMkcol(this, _store, _resLocks, READ_ONLY);
+        doDelete = new DoDelete(this, _store, _resLocks, _readOnly);
+        doCopy = new DoCopy(this, _store, _resLocks, doDelete, _readOnly);
+        doLock = new DoLock(this, _store, _resLocks, _readOnly);
+        doUnlock = new DoUnlock(this, _store, _resLocks, _readOnly);
+        doMove = new DoMove(this, _resLocks, doDelete, doCopy, _readOnly);
+        doMkcol = new DoMkcol(this, _store, _resLocks, _readOnly);
         doOptions = new DoOptions(this, _store, _resLocks);
-        doPut = new DoPut(this, _store, _resLocks, READ_ONLY, lazyFolderCreationOnPut);
+        doPut = new DoPut(this, _store, _resLocks, _readOnly, lazyFolderCreationOnPut);
         doPropfind = new DoPropfind(this, _store, _resLocks, mimeTyper);
-        doProppatch = new DoProppatch(this, _store, _resLocks, READ_ONLY);
-        doNotImplemented = new DoNotImplemented(READ_ONLY);
+        doProppatch = new DoProppatch(this, _store, _resLocks, _readOnly);
+        doNotImplemented = new DoNotImplemented(_readOnly);
 	}
 
 	public void handleMethodGET(URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException, RedirectException {
