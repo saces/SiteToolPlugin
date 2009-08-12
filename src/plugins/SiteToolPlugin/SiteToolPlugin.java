@@ -78,18 +78,17 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 
 		// set up DAV
 		// download dir
-		// TODO grab the downloads dir from config
-		LocalFileSystemStore store1 = new LocalFileSystemStore(new File("downloads"));
+		LocalFileSystemStore store1 = new LocalFileSystemStore(pr.getNode().clientCore.getDownloadDir());
 		SimpleResourceLocks resLocks1 = new SimpleResourceLocks();
 
 		// temp downloads
 		// TODO implement a filesystem for temp downloads
-		LocalFileSystemStore store2 = new LocalFileSystemStore(new File("davdemo"));
+		LocalFileSystemStore store2 = new LocalFileSystemStore(pr.getNode().clientCore.getDownloadDir());
 		SimpleResourceLocks resLocks2 = new SimpleResourceLocks();
 
 		// download dir
 		// TODO implement a filesystem for site editing/creating
-		LocalFileSystemStore store3 = new LocalFileSystemStore(new File("demo3"));
+		LocalFileSystemStore store3 = new LocalFileSystemStore(pr.getNode().clientCore.getDownloadDir());
 		SimpleResourceLocks resLocks3 = new SimpleResourceLocks();
 
 		// Invisible pages
