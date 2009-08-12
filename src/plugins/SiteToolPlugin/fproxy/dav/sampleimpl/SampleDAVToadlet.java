@@ -1,6 +1,5 @@
 package plugins.SiteToolPlugin.fproxy.dav.sampleimpl;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 
@@ -24,7 +23,6 @@ import plugins.SiteToolPlugin.fproxy.dav.methods.DoPropfind;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoProppatch;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoPut;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoUnlock;
-import plugins.SiteToolPlugin.toadlets.SitesToadlet;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.RedirectException;
@@ -80,11 +78,11 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 
 	private ITransaction _transaction;
 
-	public SampleDAVToadlet(PluginContext stCtx, Toadlet showAsToadlet) {
+	public SampleDAVToadlet(PluginContext stCtx, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
 		super(stCtx, SiteToolPlugin.PLUGIN_URI, "DAV");
 		_showAsToadlet = showAsToadlet;
-		_store = new LocalFileSystemStore(new File("davdemo"));
-		_resLocks = new SimpleResourceLocks();
+		_store = store;
+		_resLocks = resLocks;
 		init();
 	}
 

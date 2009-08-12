@@ -1,8 +1,11 @@
 package plugins.SiteToolPlugin;
 
+import java.io.File;
 import java.util.HashMap;
 
+import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.SampleDAVToadlet;
+import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.SimpleResourceLocks;
 import plugins.SiteToolPlugin.toadlets.EditSiteToadlet;
 import plugins.SiteToolPlugin.toadlets.HomeToadlet;
 import plugins.SiteToolPlugin.toadlets.SessionsToadlet;
@@ -72,8 +75,30 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 		// Invisible pages
 		EditSiteToadlet editSiteToadlet = new EditSiteToadlet(pluginContext, sitesToadlet);
 		webInterface.registerInvisible(editSiteToadlet, PLUGIN_URI + "/EditSite");
-		SampleDAVToadlet davToadlet = new SampleDAVToadlet(pluginContext, sitesToadlet);
-		webInterface.registerInvisible(davToadlet, PLUGIN_URI + "/DAV");
+
+		// set up DAV
+		// download dir
+		// TODO grab the downloads dir from config
+		LocalFileSystemStore store1 = new LocalFileSystemStore(new File("downloads"));
+		SimpleResourceLocks resLocks1 = new SimpleResourceLocks();
+
+		// temp downloads
+		// TODO implement a filesystem for temp downloads
+		LocalFileSystemStore store2 = new LocalFileSystemStore(new File("davdemo"));
+		SimpleResourceLocks resLocks2 = new SimpleResourceLocks();
+
+		// download dir
+		// TODO implement a filesystem for site editing/creating
+		LocalFileSystemStore store3 = new LocalFileSystemStore(new File("demo3"));
+		SimpleResourceLocks resLocks3 = new SimpleResourceLocks();
+
+		// Invisible pages
+		SampleDAVToadlet davToadlet1 = new SampleDAVToadlet(pluginContext, sitesToadlet, store1, resLocks1);
+		webInterface.registerInvisible(davToadlet1, PLUGIN_URI + "/DAV/downloads");
+		SampleDAVToadlet davToadlet2 = new SampleDAVToadlet(pluginContext, sitesToadlet, store2, resLocks2);
+		webInterface.registerInvisible(davToadlet2, PLUGIN_URI + "/DAV/tempdl");
+		SampleDAVToadlet davToadlet3 = new SampleDAVToadlet(pluginContext, sitesToadlet, store3, resLocks3);
+		webInterface.registerInvisible(davToadlet3, PLUGIN_URI + "/DAV/SiteEdit");
 	}
 
 	public void terminate() {
