@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
-import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.SampleDAVToadlet;
+import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.DAVToadlet;
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.SimpleResourceLocks;
 import plugins.SiteToolPlugin.toadlets.EditSiteToadlet;
 import plugins.SiteToolPlugin.toadlets.HomeToadlet;
@@ -93,11 +93,11 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 		SimpleResourceLocks resLocks3 = new SimpleResourceLocks();
 
 		// Invisible pages
-		SampleDAVToadlet davToadlet1 = new SampleDAVToadlet(pluginContext, sitesToadlet, store1, resLocks1);
+		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, sitesToadlet, store1, resLocks1);
 		webInterface.registerInvisible(davToadlet1, PLUGIN_URI + "/DAV/downloads");
-		SampleDAVToadlet davToadlet2 = new SampleDAVToadlet(pluginContext, sitesToadlet, store2, resLocks2);
+		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, sitesToadlet, store2, resLocks2);
 		webInterface.registerInvisible(davToadlet2, PLUGIN_URI + "/DAV/tempdl");
-		SampleDAVToadlet davToadlet3 = new SampleDAVToadlet(pluginContext, sitesToadlet, store3, resLocks3);
+		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, sitesToadlet, store3, resLocks3);
 		webInterface.registerInvisible(davToadlet3, PLUGIN_URI + "/DAV/SiteEdit");
 	}
 

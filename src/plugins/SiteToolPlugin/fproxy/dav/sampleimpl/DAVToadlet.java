@@ -33,12 +33,12 @@ import freenet.clients.http.annotation.AllowData;
 import freenet.support.Logger;
 import freenet.support.api.HTTPRequest;
 
-public class SampleDAVToadlet extends WebInterfaceToadlet {
+public class DAVToadlet extends WebInterfaceToadlet {
 
 	private static volatile boolean logDEBUG;
 
 	static {
-		Logger.registerClass(SampleDAVToadlet.class);
+		Logger.registerClass(DAVToadlet.class);
 	}
 
 	enum METHODS { GET, OPTIONS, PROPFIND, PROPPATCH, MKCOL, COPY,
@@ -78,7 +78,7 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 
 	private ITransaction _transaction;
 
-	public SampleDAVToadlet(PluginContext stCtx, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
+	public DAVToadlet(PluginContext stCtx, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
 		super(stCtx, SiteToolPlugin.PLUGIN_URI, "DAV");
 		_showAsToadlet = showAsToadlet;
 		_store = store;
