@@ -39,7 +39,7 @@ public class SimpleResourceLocks implements IResourceLocks {
 	private static volatile boolean logDEBUG;
 
 	static {
-		Logger.registerClass(SampleDAVToadlet.class);
+		Logger.registerClass(SimpleResourceLocks.class);
 	}
 
     /**
