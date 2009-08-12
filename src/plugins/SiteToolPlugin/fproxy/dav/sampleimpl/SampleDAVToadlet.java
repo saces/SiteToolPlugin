@@ -46,9 +46,9 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 	enum METHODS { GET, OPTIONS, PROPFIND, PROPPATCH, MKCOL, COPY,
 		MOVE, LOCK, UNLOCK, HEAD, PUT, DELETE }
 
-	private final IWebDAVStore store;
+	private final IWebDAVStore _store;
 
-	private final SitesToadlet sitesToadlet;
+	private final Toadlet _showAsToadlet;
 
 	private DoGet doGet;
 	private DoHead doHead;
@@ -80,10 +80,10 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 
 	private ITransaction _transaction;
 
-	public SampleDAVToadlet(PluginContext stCtx, SitesToadlet sitesToadlet2) {
+	public SampleDAVToadlet(PluginContext stCtx, Toadlet showAsToadlet) {
 		super(stCtx, SiteToolPlugin.PLUGIN_URI, "DAV");
-		this.sitesToadlet = sitesToadlet2;
-		store = new LocalFileSystemStore(new File("davdemo"));
+		_showAsToadlet = showAsToadlet;
+		_store = new LocalFileSystemStore(new File("davdemo"));
 		_resLocks = new SimpleResourceLocks();
 		init();
 	}
@@ -95,18 +95,18 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
                 return "mimetype";
             }
         };
-        doGet = new DoGet(store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
-        doHead = new DoHead(store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
-        doDelete = new DoDelete(store, _resLocks, READ_ONLY);
-        doCopy = new DoCopy(store, _resLocks, doDelete, READ_ONLY);
-        doLock = new DoLock(store, _resLocks, READ_ONLY);
-        doUnlock = new DoUnlock(store, _resLocks, READ_ONLY);
+        doGet = new DoGet(_store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
+        doHead = new DoHead(_store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
+        doDelete = new DoDelete(_store, _resLocks, READ_ONLY);
+        doCopy = new DoCopy(_store, _resLocks, doDelete, READ_ONLY);
+        doLock = new DoLock(_store, _resLocks, READ_ONLY);
+        doUnlock = new DoUnlock(_store, _resLocks, READ_ONLY);
         doMove = new DoMove(_resLocks, doDelete, doCopy, READ_ONLY);
-        doMkcol = new DoMkcol(store, _resLocks, READ_ONLY);
-        doOptions = new DoOptions(store, _resLocks);
-        doPut = new DoPut(store, _resLocks, READ_ONLY, lazyFolderCreationOnPut);
-        doPropfind = new DoPropfind(store, _resLocks, mimeTyper);
-        doProppatch = new DoProppatch(store, _resLocks, READ_ONLY);
+        doMkcol = new DoMkcol(_store, _resLocks, READ_ONLY);
+        doOptions = new DoOptions(_store, _resLocks);
+        doPut = new DoPut(_store, _resLocks, READ_ONLY, lazyFolderCreationOnPut);
+        doPropfind = new DoPropfind(_store, _resLocks, mimeTyper);
+        doProppatch = new DoProppatch(_store, _resLocks, READ_ONLY);
         doNotImplemented = new DoNotImplemented(READ_ONLY);
 	}
 
@@ -187,7 +187,7 @@ public class SampleDAVToadlet extends WebInterfaceToadlet {
 
 	@Override
 	public Toadlet showAsToadlet() {
-		return sitesToadlet;
+		return _showAsToadlet;
 	}
 
 }
