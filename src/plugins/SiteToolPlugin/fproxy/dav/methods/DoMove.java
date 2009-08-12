@@ -27,6 +27,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.ObjectAlreadyExistsException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -45,7 +46,8 @@ public class DoMove extends AbstractMethod {
     private DoCopy _doCopy;
     private boolean _readOnly;
 
-    public DoMove(IResourceLocks resourceLocks, DoDelete doDelete, DoCopy doCopy, boolean readOnly) {
+    public DoMove(Toadlet parent, IResourceLocks resourceLocks, DoDelete doDelete, DoCopy doCopy, boolean readOnly) {
+    	super(parent);
         _resourceLocks = resourceLocks;
         _doDelete = doDelete;
         _doCopy = doCopy;

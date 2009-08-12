@@ -11,6 +11,7 @@ import plugins.SiteToolPlugin.fproxy.dav.api.WebDAVStatus;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -28,7 +29,8 @@ public class DoUnlock extends DeterminableMethod {
     private plugins.SiteToolPlugin.fproxy.dav.api.IResourceLocks _resourceLocks;
     private boolean _readOnly;
 
-    public DoUnlock(IWebDAVStore store, plugins.SiteToolPlugin.fproxy.dav.api.IResourceLocks resourceLocks, boolean readOnly) {
+    public DoUnlock(Toadlet parent, IWebDAVStore store, plugins.SiteToolPlugin.fproxy.dav.api.IResourceLocks resourceLocks, boolean readOnly) {
+    	super(parent);
         _store = store;
         _resourceLocks = resourceLocks;
         _readOnly = readOnly;

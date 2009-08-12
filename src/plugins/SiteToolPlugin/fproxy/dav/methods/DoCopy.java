@@ -20,6 +20,7 @@ import java.net.URI;
 import java.util.Hashtable;
 
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -50,8 +51,9 @@ public class DoCopy extends AbstractMethod {
     private DoDelete _doDelete;
     private boolean _readOnly;
 
-    public DoCopy(IWebDAVStore store, IResourceLocks resourceLocks,
+    public DoCopy(Toadlet parent, IWebDAVStore store, IResourceLocks resourceLocks,
             DoDelete doDelete, boolean readOnly) {
+    	super(parent);
         _store = store;
         _resourceLocks = resourceLocks;
         _doDelete = doDelete;

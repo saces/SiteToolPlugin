@@ -41,6 +41,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -71,8 +72,9 @@ public class DoLock extends AbstractMethod {
 
     private String _userAgent = null;
 
-    public DoLock(IWebDAVStore store, IResourceLocks resourceLocks,boolean readOnly) {
-        _store = store;
+    public DoLock(Toadlet parent, IWebDAVStore store, IResourceLocks resourceLocks,boolean readOnly) {
+    	super(parent);
+    	_store = store;
         _resourceLocks = resourceLocks;
         _readOnly = readOnly;
     }

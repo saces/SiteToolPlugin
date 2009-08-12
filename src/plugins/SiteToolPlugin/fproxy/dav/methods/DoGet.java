@@ -18,6 +18,7 @@ package plugins.SiteToolPlugin.fproxy.dav.methods;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -41,10 +42,10 @@ public class DoGet extends DoHead {
 		Logger.registerClass(DoGet.class);
 	}
 
-    public DoGet(IWebDAVStore store, String dftIndexFile, String insteadOf404,
+    public DoGet(Toadlet parent, IWebDAVStore store, String dftIndexFile, String insteadOf404,
             IResourceLocks resourceLocks, IMimeTyper mimeTyper,
             int contentLengthHeader) {
-        super(store, dftIndexFile, insteadOf404, resourceLocks, mimeTyper, contentLengthHeader);
+        super(parent, store, dftIndexFile, insteadOf404, resourceLocks, mimeTyper, contentLengthHeader);
 
     }
 

@@ -29,6 +29,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -111,6 +112,12 @@ public abstract class AbstractMethod implements IMethodExecutor {
      * Timeout for temporary locks
      */
     protected static final int TEMP_TIMEOUT = 10;
+    
+    private final Toadlet _parent;
+
+    AbstractMethod(Toadlet parent) {
+    	_parent = parent;
+    }
 
     /**
      * Return the relative path associated with this servlet.
@@ -119,20 +126,14 @@ public abstract class AbstractMethod implements IMethodExecutor {
      *      The servlet request we are processing
      */
     protected String getRelativePath(HTTPRequest request) {
-
     	// TODO / FIXME get the prefix somewhere from!
         // No, extract the desired path directly from the request
-        String result = request.getPath().substring("/SiteTool/DAV".length());
-        
-        Logger.error(this, "TODO: path="+result, new Exception("TODO"));
-        // if (result == null) {
-        // result = request.getServletPath();
-        // }
+        String result = request.getPath().substring(_parent.path().length());
+        Logger.error(this, "TODO: path="+result + "(origin="+request.getPath()+')', new Exception("TODO"));
         if ((result == null) || (result.equals(""))) {
             result = "/";
         }
         return (result);
-
     }
 
     /**

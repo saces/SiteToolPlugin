@@ -27,6 +27,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.AccessDeniedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -44,7 +45,8 @@ public class DoOptions extends DeterminableMethod {
     private IWebDAVStore _store;
     private IResourceLocks _resourceLocks;
 
-    public DoOptions(IWebDAVStore store, IResourceLocks resLocks) {
+    public DoOptions(Toadlet parent, IWebDAVStore store, IResourceLocks resLocks) {
+    	super(parent);
         _store = store;
         _resourceLocks = resLocks;
     }

@@ -21,6 +21,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.clients.http.ToadletContextImpl;
@@ -55,9 +56,10 @@ public class DoHead extends AbstractMethod {
     protected IMimeTyper _mimeTyper;
     protected int _contentLength;
 
-    public DoHead(IWebDAVStore store, String dftIndexFile, String insteadOf404,
+    public DoHead(Toadlet parent, IWebDAVStore store, String dftIndexFile, String insteadOf404,
             IResourceLocks resourceLocks, IMimeTyper mimeTyper,
             int contentLengthHeader) {
+    	super(parent);
         _store = store;
         _dftIndexFile = dftIndexFile;
         _insteadOf404 = insteadOf404;

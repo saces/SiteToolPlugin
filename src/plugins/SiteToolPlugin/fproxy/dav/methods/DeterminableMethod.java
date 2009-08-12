@@ -15,11 +15,16 @@
  */
 package plugins.SiteToolPlugin.fproxy.dav.methods;
 
+import freenet.clients.http.Toadlet;
 import plugins.SiteToolPlugin.fproxy.dav.api.IStoredObject;
 
 public abstract class DeterminableMethod extends AbstractMethod {
 
-    private static final String NULL_RESOURCE_METHODS_ALLOWED = "OPTIONS, MKCOL, PUT, PROPFIND, LOCK, UNLOCK";
+    DeterminableMethod(Toadlet parent) {
+		super(parent);
+	}
+
+	private static final String NULL_RESOURCE_METHODS_ALLOWED = "OPTIONS, MKCOL, PUT, PROPFIND, LOCK, UNLOCK";
 
     private static final String RESOURCE_METHODS_ALLOWED = "OPTIONS, GET, HEAD, POST, DELETE, TRACE"
             + ", PROPPATCH, COPY, MOVE, LOCK, UNLOCK, PROPFIND";

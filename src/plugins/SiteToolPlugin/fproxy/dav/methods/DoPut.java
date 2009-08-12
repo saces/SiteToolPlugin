@@ -29,6 +29,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.AccessDeniedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -49,8 +50,9 @@ public class DoPut extends AbstractMethod {
 
     private String _userAgent;
 
-    public DoPut(IWebDAVStore store, IResourceLocks resLocks, boolean readOnly,
+    public DoPut(Toadlet parent, IWebDAVStore store, IResourceLocks resLocks, boolean readOnly,
             boolean lazyFolderCreationOnPut) {
+    	super(parent);
         _store = store;
         _resourceLocks = resLocks;
         _readOnly = readOnly;

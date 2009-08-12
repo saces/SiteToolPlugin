@@ -93,11 +93,11 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 		SimpleResourceLocks resLocks3 = new SimpleResourceLocks();
 
 		// Invisible pages
-		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, sitesToadlet, store1, resLocks1);
+		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/downloads", sitesToadlet, store1, resLocks1);
 		webInterface.registerInvisible(davToadlet1, PLUGIN_URI + "/DAV/downloads");
-		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, sitesToadlet, store2, resLocks2);
+		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/tempdl", sitesToadlet, store2, resLocks2);
 		webInterface.registerInvisible(davToadlet2, PLUGIN_URI + "/DAV/tempdl");
-		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, sitesToadlet, store3, resLocks3);
+		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/siteedit", sitesToadlet, store3, resLocks3);
 		webInterface.registerInvisible(davToadlet3, PLUGIN_URI + "/DAV/SiteEdit");
 	}
 
@@ -124,18 +124,6 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 			}
 		} catch (PluginNotFoundException pnfe) {
 			Logger.error(this, "Connction to request sender Lost.", pnfe);
-		}
-	}
-
-	private SiteToolSession getSession(String identifier) {
-		synchronized (sessions) {
-			return sessions.get(identifier);
-		}
-	}
-	
-	private void addSession(String identifier, SiteToolSession sess) {
-		synchronized (sessions) {
-			sessions.put(identifier, sess);
 		}
 	}
 

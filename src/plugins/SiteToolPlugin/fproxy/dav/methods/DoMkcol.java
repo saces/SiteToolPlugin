@@ -29,6 +29,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.AccessDeniedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -47,8 +48,9 @@ public class DoMkcol extends AbstractMethod {
     private IResourceLocks _resourceLocks;
     private boolean _readOnly;
 
-    public DoMkcol(IWebDAVStore store, IResourceLocks resourceLocks,
+    public DoMkcol(Toadlet parent, IWebDAVStore store, IResourceLocks resourceLocks,
             boolean readOnly) {
+    	super(parent);
         _store = store;
         _resourceLocks = resourceLocks;
         _readOnly = readOnly;

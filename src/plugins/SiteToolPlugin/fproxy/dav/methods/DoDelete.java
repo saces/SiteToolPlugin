@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Hashtable;
 
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -46,7 +47,8 @@ public class DoDelete extends AbstractMethod {
     private IResourceLocks _resourceLocks;
     private boolean _readOnly;
 
-    public DoDelete(IWebDAVStore store, IResourceLocks resourceLocks, boolean readOnly) {
+    public DoDelete(Toadlet parent, IWebDAVStore store, IResourceLocks resourceLocks, boolean readOnly) {
+    	super(parent);
         _store = store;
         _resourceLocks = resourceLocks;
         _readOnly = readOnly;

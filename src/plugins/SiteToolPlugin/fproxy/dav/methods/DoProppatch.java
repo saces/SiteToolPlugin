@@ -27,6 +27,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLHelper;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -46,8 +47,9 @@ public class DoProppatch extends AbstractMethod {
     private IWebDAVStore _store;
     private IResourceLocks _resourceLocks;
 
-    public DoProppatch(IWebDAVStore store, IResourceLocks resLocks,
+    public DoProppatch(Toadlet parent, IWebDAVStore store, IResourceLocks resLocks,
             boolean readOnly) {
+    	super(parent);
         _readOnly = readOnly;
         _store = store;
         _resourceLocks = resLocks;

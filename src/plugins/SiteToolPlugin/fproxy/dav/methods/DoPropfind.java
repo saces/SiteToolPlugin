@@ -43,6 +43,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLHelper;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
 import freenet.clients.http.RedirectException;
+import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.Logger;
@@ -78,8 +79,9 @@ public class DoPropfind extends AbstractMethod {
 
     private int _depth;
 
-    public DoPropfind(IWebDAVStore store, IResourceLocks resLocks,
+    public DoPropfind(Toadlet parent, IWebDAVStore store, IResourceLocks resLocks,
             IMimeTyper mimeTyper) {
+    	super(parent);
         _store = store;
         _resourceLocks = resLocks;
         _mimeTyper = mimeTyper;

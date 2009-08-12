@@ -3,7 +3,6 @@ package plugins.SiteToolPlugin.fproxy.dav.sampleimpl;
 import java.io.IOException;
 import java.net.URI;
 
-import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.fproxy.dav.api.IMimeTyper;
 import plugins.SiteToolPlugin.fproxy.dav.api.IResourceLocks;
 import plugins.SiteToolPlugin.fproxy.dav.api.ITransaction;
@@ -78,8 +77,8 @@ public class DAVToadlet extends WebInterfaceToadlet {
 
 	private ITransaction _transaction;
 
-	public DAVToadlet(PluginContext stCtx, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
-		super(stCtx, SiteToolPlugin.PLUGIN_URI, "DAV");
+	public DAVToadlet(PluginContext stCtx, String pluginURL, String pageName, Toadlet showAsToadlet, IWebDAVStore store, IResourceLocks resLocks) {
+		super(stCtx, pluginURL, pageName);
 		_showAsToadlet = showAsToadlet;
 		_store = store;
 		_resLocks = resLocks;
@@ -93,18 +92,18 @@ public class DAVToadlet extends WebInterfaceToadlet {
                 return "mimetype";
             }
         };
-        doGet = new DoGet(_store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
-        doHead = new DoHead(_store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
-        doDelete = new DoDelete(_store, _resLocks, READ_ONLY);
-        doCopy = new DoCopy(_store, _resLocks, doDelete, READ_ONLY);
-        doLock = new DoLock(_store, _resLocks, READ_ONLY);
-        doUnlock = new DoUnlock(_store, _resLocks, READ_ONLY);
-        doMove = new DoMove(_resLocks, doDelete, doCopy, READ_ONLY);
-        doMkcol = new DoMkcol(_store, _resLocks, READ_ONLY);
-        doOptions = new DoOptions(_store, _resLocks);
-        doPut = new DoPut(_store, _resLocks, READ_ONLY, lazyFolderCreationOnPut);
-        doPropfind = new DoPropfind(_store, _resLocks, mimeTyper);
-        doProppatch = new DoProppatch(_store, _resLocks, READ_ONLY);
+        doGet = new DoGet(this, _store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
+        doHead = new DoHead(this, _store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);
+        doDelete = new DoDelete(this, _store, _resLocks, READ_ONLY);
+        doCopy = new DoCopy(this, _store, _resLocks, doDelete, READ_ONLY);
+        doLock = new DoLock(this, _store, _resLocks, READ_ONLY);
+        doUnlock = new DoUnlock(this, _store, _resLocks, READ_ONLY);
+        doMove = new DoMove(this, _resLocks, doDelete, doCopy, READ_ONLY);
+        doMkcol = new DoMkcol(this, _store, _resLocks, READ_ONLY);
+        doOptions = new DoOptions(this, _store, _resLocks);
+        doPut = new DoPut(this, _store, _resLocks, READ_ONLY, lazyFolderCreationOnPut);
+        doPropfind = new DoPropfind(this, _store, _resLocks, mimeTyper);
+        doProppatch = new DoProppatch(this, _store, _resLocks, READ_ONLY);
         doNotImplemented = new DoNotImplemented(READ_ONLY);
 	}
 
