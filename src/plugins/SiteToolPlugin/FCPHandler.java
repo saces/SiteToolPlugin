@@ -5,10 +5,10 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 
 import plugins.KeyExplorer.KeyExplorerUtils;
+import freenet.client.FetchException;
 import freenet.client.Metadata;
 import freenet.client.MetadataParseException;
 import freenet.keys.FreenetURI;
-import freenet.node.LowLevelGetException;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
 import freenet.pluginmanager.PluginRespirator;
@@ -119,7 +119,7 @@ public class FCPHandler {
 				Logger.error(this, "Parameter 'OldURI' failed to fetch.", e);
 				FCPHandler.sendError(replysender, STFCPException.INVALID_OLDURI, identifier, "Parameter 'OldURI' failed to fetch: "+e.getMessage());
 				return;
-			} catch (LowLevelGetException e) {
+			} catch (FetchException e) {
 				Logger.error(this, "Parameter 'OldURI' failed to fetch.", e);
 				FCPHandler.sendError(replysender, STFCPException.INVALID_OLDURI, identifier, "Parameter 'OldURI' failed to fetch: "+e.getMessage());
 				return;
