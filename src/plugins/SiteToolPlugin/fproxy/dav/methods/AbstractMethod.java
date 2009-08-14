@@ -47,6 +47,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.URLEncoder;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
+import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter.TAG;
 
 public abstract class AbstractMethod implements IMethodExecutor {
 
@@ -362,7 +363,7 @@ public abstract class AbstractMethod implements IMethodExecutor {
 
 		xmlWriter.writeXMLHeader();
 
-        xmlWriter.writeElement("DAV::multistatus", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::multistatus", TAG.OPENING);
 
         Enumeration<String> pathList = errorList.keys();
         while (pathList.hasMoreElements()) {
@@ -370,9 +371,9 @@ public abstract class AbstractMethod implements IMethodExecutor {
             String errorPath = (String) pathList.nextElement();
             int errorCode = ((Integer) errorList.get(errorPath)).intValue();
 
-            xmlWriter.writeElement("DAV::response", XMLWriter.OPENING);
+            xmlWriter.writeElement("DAV::response", TAG.OPENING);
 
-            xmlWriter.writeElement("DAV::href", XMLWriter.OPENING);
+            xmlWriter.writeElement("DAV::href", TAG.OPENING);
             String toAppend = null;
             if (absoluteUri.endsWith(errorPath)) {
                 toAppend = absoluteUri;
@@ -386,16 +387,16 @@ public abstract class AbstractMethod implements IMethodExecutor {
             if (!toAppend.startsWith("/") && !toAppend.startsWith("http:"))
                 toAppend = "/" + toAppend;
             xmlWriter.writeText(errorPath);
-            xmlWriter.writeElement("DAV::href", XMLWriter.CLOSING);
-            xmlWriter.writeElement("DAV::status", XMLWriter.OPENING);
+            xmlWriter.writeElement("DAV::href", TAG.CLOSING);
+            xmlWriter.writeElement("DAV::status", TAG.OPENING);
             xmlWriter.writeText("HTTP/1.1 " + errorCode + " " + WebDAVStatus.getStatusText(errorCode));
-            xmlWriter.writeElement("DAV::status", XMLWriter.CLOSING);
+            xmlWriter.writeElement("DAV::status", TAG.CLOSING);
 
-            xmlWriter.writeElement("DAV::response", XMLWriter.CLOSING);
+            xmlWriter.writeElement("DAV::response", TAG.CLOSING);
 
         }
 
-        xmlWriter.writeElement("DAV::multistatus", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::multistatus", TAG.CLOSING);
         
         xmlWriter.close();
         os.close();

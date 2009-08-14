@@ -40,6 +40,7 @@ import plugins.SiteToolPlugin.fproxy.dav.api.WebDAVStatus;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
+import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter.TAG;
 import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
@@ -498,53 +499,53 @@ public class DoLock extends AbstractMethod {
 		XMLWriter xmlWriter = new XMLWriter(os, namespaces);
 
         xmlWriter.writeXMLHeader();
-        xmlWriter.writeElement("DAV::prop", XMLWriter.OPENING);
-        xmlWriter.writeElement("DAV::lockdiscovery", XMLWriter.OPENING);
-        xmlWriter.writeElement("DAV::activelock", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::prop", TAG.OPENING);
+        xmlWriter.writeElement("DAV::lockdiscovery", TAG.OPENING);
+        xmlWriter.writeElement("DAV::activelock", TAG.OPENING);
 
-        xmlWriter.writeElement("DAV::locktype", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::locktype", TAG.OPENING);
         xmlWriter.writeProperty("DAV::" + _type);
-        xmlWriter.writeElement("DAV::locktype", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::locktype", TAG.CLOSING);
 
-        xmlWriter.writeElement("DAV::lockscope", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::lockscope", TAG.OPENING);
         if (_exclusive) {
             xmlWriter.writeProperty("DAV::exclusive");
         } else {
             xmlWriter.writeProperty("DAV::shared");
         }
-        xmlWriter.writeElement("DAV::lockscope", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::lockscope", TAG.CLOSING);
 
         int depth = lo.getLockDepth();
 
-        xmlWriter.writeElement("DAV::depth", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::depth", TAG.OPENING);
         if (depth == INFINITY) {
             xmlWriter.writeText("Infinity");
         } else {
             xmlWriter.writeText(String.valueOf(depth));
         }
-        xmlWriter.writeElement("DAV::depth", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::depth", TAG.CLOSING);
 
-        xmlWriter.writeElement("DAV::owner", XMLWriter.OPENING);
-        xmlWriter.writeElement("DAV::href", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::owner", TAG.OPENING);
+        xmlWriter.writeElement("DAV::href", TAG.OPENING);
         xmlWriter.writeText(_lockOwner);
-        xmlWriter.writeElement("DAV::href", XMLWriter.CLOSING);
-        xmlWriter.writeElement("DAV::owner", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::href", TAG.CLOSING);
+        xmlWriter.writeElement("DAV::owner", TAG.CLOSING);
 
         long timeout = lo.getTimeoutMillis();
-        xmlWriter.writeElement("DAV::timeout", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::timeout", TAG.OPENING);
         xmlWriter.writeText("Second-" + timeout / 1000);
-        xmlWriter.writeElement("DAV::timeout", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::timeout", TAG.CLOSING);
 
         String lockToken = lo.getID();
-        xmlWriter.writeElement("DAV::locktoken", XMLWriter.OPENING);
-        xmlWriter.writeElement("DAV::href", XMLWriter.OPENING);
+        xmlWriter.writeElement("DAV::locktoken", TAG.OPENING);
+        xmlWriter.writeElement("DAV::href", TAG.OPENING);
         xmlWriter.writeText("opaquelocktoken:" + lockToken);
-        xmlWriter.writeElement("DAV::href", XMLWriter.CLOSING);
-        xmlWriter.writeElement("DAV::locktoken", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::href", TAG.CLOSING);
+        xmlWriter.writeElement("DAV::locktoken", TAG.CLOSING);
 
-        xmlWriter.writeElement("DAV::activelock", XMLWriter.CLOSING);
-        xmlWriter.writeElement("DAV::lockdiscovery", XMLWriter.CLOSING);
-        xmlWriter.writeElement("DAV::prop", XMLWriter.CLOSING);
+        xmlWriter.writeElement("DAV::activelock", TAG.CLOSING);
+        xmlWriter.writeElement("DAV::lockdiscovery", TAG.CLOSING);
+        xmlWriter.writeElement("DAV::prop", TAG.CLOSING);
 
         xmlWriter.close();
         os.close();

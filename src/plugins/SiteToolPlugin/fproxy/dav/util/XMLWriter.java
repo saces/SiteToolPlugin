@@ -32,20 +32,12 @@ public class XMLWriter {
 
     // -------------------------------------------------------------- Constants
 
-    /**
-     * Opening tag.
-     */
-    public static final int OPENING = 0;
-
-    /**
-     * Closing tag.
-     */
-    public static final int CLOSING = 1;
-
-    /**
-     * Element with no content.
-     */
-    public static final int NO_CONTENT = 2;
+	
+	/**
+	 * tag type: Opening, Closing, without content
+	 *
+	 */
+	public enum TAG { OPENING, CLOSING, NO_CONTENT }
 
     // ----------------------------------------------------- Instance Variables
 
@@ -90,9 +82,9 @@ public class XMLWriter {
      * @throws IOException 
      */
     public void writeProperty(String name, String value) throws IOException {
-        writeElement(name, OPENING);
+        writeElement(name, TAG.OPENING);
         _writer.append(value);
-        writeElement(name, CLOSING);
+        writeElement(name, TAG.CLOSING);
     }
 
     /**
@@ -103,7 +95,7 @@ public class XMLWriter {
      * @throws IOException 
      */
     public void writeProperty(String name) throws IOException {
-        writeElement(name, NO_CONTENT);
+        writeElement(name, TAG.NO_CONTENT);
     }
 
     /**
@@ -115,7 +107,7 @@ public class XMLWriter {
      *      Element type
      * @throws IOException 
      */
-    public void writeElement(String name, int type) throws IOException {
+    public void writeElement(String name, TAG type) throws IOException {
         StringBuffer nsdecl = new StringBuffer();
 
         if (_isRootElement) {

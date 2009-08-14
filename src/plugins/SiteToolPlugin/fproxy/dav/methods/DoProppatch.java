@@ -26,6 +26,7 @@ import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLHelper;
 import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter;
+import plugins.SiteToolPlugin.fproxy.dav.util.XMLWriter.TAG;
 import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
@@ -169,14 +170,14 @@ public class DoProppatch extends AbstractMethod {
         		
                 xmlWriter.writeXMLHeader();
                 xmlWriter
-                        .writeElement("DAV::multistatus", XMLWriter.OPENING);
+                        .writeElement("DAV::multistatus", TAG.OPENING);
 
-                xmlWriter.writeElement("DAV::response", XMLWriter.OPENING);
+                xmlWriter.writeElement("DAV::response", TAG.OPENING);
                 String status = new String("HTTP/1.1 " + WebDAVStatus.SC_OK
                         + " " + WebDAVStatus.getStatusText(WebDAVStatus.SC_OK));
 
                 // Generating href element
-                xmlWriter.writeElement("DAV::href", XMLWriter.OPENING);
+                xmlWriter.writeElement("DAV::href", TAG.OPENING);
 
                 String href = req.getPath();
                 if ((href.endsWith("/")) && (path.startsWith("/")))
@@ -188,23 +189,23 @@ public class DoProppatch extends AbstractMethod {
 
                 xmlWriter.writeText(rewriteUrl(href));
 
-                xmlWriter.writeElement("DAV::href", XMLWriter.CLOSING);
+                xmlWriter.writeElement("DAV::href", TAG.CLOSING);
 
                 for (String property: tochange) {
-                    xmlWriter.writeElement("DAV::propstat", XMLWriter.OPENING);
+                    xmlWriter.writeElement("DAV::propstat", TAG.OPENING);
 
-                    xmlWriter.writeElement("DAV::prop", XMLWriter.OPENING);
-                    xmlWriter.writeElement(property, XMLWriter.NO_CONTENT);
-                    xmlWriter.writeElement("DAV::prop", XMLWriter.CLOSING);
+                    xmlWriter.writeElement("DAV::prop", TAG.OPENING);
+                    xmlWriter.writeElement(property, TAG.NO_CONTENT);
+                    xmlWriter.writeElement("DAV::prop", TAG.CLOSING);
 
-                    xmlWriter.writeElement("DAV::status", XMLWriter.OPENING);
+                    xmlWriter.writeElement("DAV::status", TAG.OPENING);
                     xmlWriter.writeText(status);
-                    xmlWriter.writeElement("DAV::status", XMLWriter.CLOSING);
+                    xmlWriter.writeElement("DAV::status", TAG.CLOSING);
 
-                    xmlWriter.writeElement("DAV::propstat", XMLWriter.CLOSING);
+                    xmlWriter.writeElement("DAV::propstat", TAG.CLOSING);
                 }
-                xmlWriter.writeElement("DAV::response", XMLWriter.CLOSING);
-                xmlWriter.writeElement("DAV::multistatus", XMLWriter.CLOSING);
+                xmlWriter.writeElement("DAV::response", TAG.CLOSING);
+                xmlWriter.writeElement("DAV::multistatus", TAG.CLOSING);
                 xmlWriter.close();
                 os.close();
 
