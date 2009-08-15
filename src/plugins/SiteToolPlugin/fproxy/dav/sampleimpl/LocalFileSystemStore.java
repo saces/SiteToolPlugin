@@ -189,7 +189,7 @@ public class LocalFileSystemStore implements IWebDAVStore {
     public IStoredObject getStoredObject(ITransaction transaction, String uri) throws WebDAVException {
         SimpleStoredObject so = null;
         File file = new File(_root, uri);
-        Logger.error(this, "look for file: " + file.exists() + " - " + file.getAbsolutePath(), new Exception("DEBUG"));
+        Logger.error(this, "Look for file: " + file.exists() + " - " + file.getAbsolutePath(), new Exception("DEBUG"));
         if (file.exists()) {
             so = new SimpleStoredObject();
             so.setFolder(file.isDirectory());

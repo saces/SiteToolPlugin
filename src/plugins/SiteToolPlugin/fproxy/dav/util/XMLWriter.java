@@ -86,6 +86,7 @@ public class XMLWriter {
         writeElement(name, TAG.OPENING);
         _writer.append(value);
         writeElement(name, TAG.CLOSING);
+        newLine();
     }
 
     /**
@@ -97,6 +98,7 @@ public class XMLWriter {
      */
     public void writeProperty(String name) throws IOException {
         writeElement(name, TAG.NO_CONTENT);
+        newLine();
     }
 
     /**
@@ -170,10 +172,15 @@ public class XMLWriter {
         _indent--;
         for(int i=0;i<_indent;i++) _writer.append(' ');
     }
-    
+
     public void writeElementIndent(String name, TAG type) throws IOException {
     	writeElement(name, type);
     	indentNl();
+    }
+
+    public void writeElementNl(String name, TAG type) throws IOException {
+    	writeElement(name, type);
+    	newLine();
     }
 
     /**

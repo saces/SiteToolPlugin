@@ -60,10 +60,12 @@ public class DoPropfind extends AbstractMethod {
 	}
 
 	enum FindType {
-		BY_PROPERTY, // Specify a property mask.
-		ALL, // Display all properties.
-		NAMES
+		// Specify a property mask.
+		BY_PROPERTY,
+		// Display all properties.
+		ALL,
 		// Return property names.
+		NAMES
 	}
 
 	private IWebDAVStore _store;
@@ -154,7 +156,7 @@ public class DoPropfind extends AbstractMethod {
 				XMLWriter xmlWriter = new XMLWriter(os, namespaces);
 
 				xmlWriter.writeXMLHeader();
-				xmlWriter.writeElement("DAV::multistatus", TAG.OPENING);
+				xmlWriter.writeElementIndent("DAV::multistatus", TAG.OPENING);
 				if (_depth == 0) {
 					parseProperties(transaction, req, xmlWriter, path,
 							propertyFindType, properties, _mimeTyper
@@ -263,7 +265,7 @@ public class DoPropfind extends AbstractMethod {
 
 		// ResourceInfo resourceInfo = new ResourceInfo(path, resources);
 
-		xmlWriter.writeElement("DAV::response", TAG.OPENING);
+		xmlWriter.writeElementIndent("DAV::response", TAG.OPENING);
 		String status = new String("HTTP/1.1 " + WebDAVStatus.SC_OK + " "
 				+ WebDAVStatus.getStatusText(WebDAVStatus.SC_OK));
 
@@ -271,13 +273,6 @@ public class DoPropfind extends AbstractMethod {
 		xmlWriter.writeElement("DAV::href", TAG.OPENING);
 
 		String href = req.getPath();
-		String servletPath = req.getPath();
-		if (servletPath != null) {
-			if ((href.endsWith("/")) && (servletPath.startsWith("/")))
-				href += servletPath.substring(1);
-			else
-				href += servletPath;
-		}
 		if ((href.endsWith("/")) && (path.startsWith("/")))
 			href += path.substring(1);
 		else
@@ -287,7 +282,7 @@ public class DoPropfind extends AbstractMethod {
 
 		xmlWriter.writeText(rewriteUrl(href));
 
-		xmlWriter.writeElement("DAV::href", TAG.CLOSING);
+		xmlWriter.writeElementNl("DAV::href", TAG.CLOSING);
 
 		String resourceName = path;
 		int lastSlash = path.lastIndexOf('/');
@@ -298,7 +293,7 @@ public class DoPropfind extends AbstractMethod {
 
 		case ALL:
 
-			xmlWriter.writeElement("DAV::propstat", TAG.OPENING);
+			xmlWriter.writeElementIndent("DAV::propstat", TAG.OPENING);
 			xmlWriter.writeElement("DAV::prop", TAG.OPENING);
 
 			xmlWriter.writeProperty("DAV::creationdate", creationdate);
@@ -314,8 +309,7 @@ public class DoPropfind extends AbstractMethod {
 					xmlWriter.writeProperty("DAV::getcontenttype", contentType);
 				}
 				xmlWriter.writeProperty("DAV::getetag", getETag(so));
-				xmlWriter.writeElement("DAV::resourcetype",
-						TAG.NO_CONTENT);
+				xmlWriter.writeElement("DAV::resourcetype", TAG.NO_CONTENT);
 			} else {
 				xmlWriter.writeElement("DAV::resourcetype", TAG.OPENING);
 				xmlWriter.writeElement("DAV::collection", TAG.NO_CONTENT);
@@ -345,13 +339,10 @@ public class DoPropfind extends AbstractMethod {
 			if (!isFolder) {
 				xmlWriter.writeElement("DAV::getcontentlanguage",
 						TAG.NO_CONTENT);
-				xmlWriter.writeElement("DAV::getcontentlength",
-						TAG.NO_CONTENT);
-				xmlWriter.writeElement("DAV::getcontenttype",
-						TAG.NO_CONTENT);
+				xmlWriter.writeElement("DAV::getcontentlength", TAG.NO_CONTENT);
+				xmlWriter.writeElement("DAV::getcontenttype", TAG.NO_CONTENT);
 				xmlWriter.writeElement("DAV::getetag", TAG.NO_CONTENT);
-				xmlWriter.writeElement("DAV::getlastmodified",
-						TAG.NO_CONTENT);
+				xmlWriter.writeElement("DAV::getlastmodified", TAG.NO_CONTENT);
 			}
 			xmlWriter.writeElement("DAV::resourcetype", TAG.NO_CONTENT);
 			xmlWriter.writeElement("DAV::supportedlock", TAG.NO_CONTENT);
@@ -371,8 +362,8 @@ public class DoPropfind extends AbstractMethod {
 
 			// Parse the list of properties
 
-			xmlWriter.writeElement("DAV::propstat", TAG.OPENING);
-			xmlWriter.writeElement("DAV::prop", TAG.OPENING);
+			xmlWriter.writeElementIndent("DAV::propstat", TAG.OPENING);
+			xmlWriter.writeElementIndent("DAV::prop", TAG.OPENING);
 
 			Enumeration<String> properties = propertiesVector.elements();
 
@@ -383,11 +374,9 @@ public class DoPropfind extends AbstractMethod {
 				if (property.equals("DAV::creationdate")) {
 					xmlWriter.writeProperty("DAV::creationdate", creationdate);
 				} else if (property.equals("DAV::displayname")) {
-					xmlWriter.writeElement("DAV::displayname",
-							TAG.OPENING);
+					xmlWriter.writeElement("DAV::displayname", TAG.OPENING);
 					xmlWriter.writeData(resourceName);
-					xmlWriter.writeElement("DAV::displayname",
-							TAG.CLOSING);
+					xmlWriter.writeElementNl("DAV::displayname", TAG.CLOSING);
 				} else if (property.equals("DAV::getcontentlanguage")) {
 					if (isFolder) {
 						propertiesNotFound.addElement(property);
@@ -424,14 +413,14 @@ public class DoPropfind extends AbstractMethod {
 					}
 				} else if (property.equals("DAV::resourcetype")) {
 					if (isFolder) {
-						xmlWriter.writeElement("DAV::resourcetype",
-								TAG.OPENING);
+						xmlWriter
+								.writeElement("DAV::resourcetype", TAG.OPENING);
 						xmlWriter.writeElement("DAV::collection",
 								TAG.NO_CONTENT);
-						xmlWriter.writeElement("DAV::resourcetype",
-								TAG.CLOSING);
+						xmlWriter
+								.writeElementNl("DAV::resourcetype", TAG.CLOSING);
 					} else {
-						xmlWriter.writeElement("DAV::resourcetype",
+						xmlWriter.writeElementNl("DAV::resourcetype",
 								TAG.NO_CONTENT);
 					}
 				} else if (property.equals("DAV::source")) {
@@ -532,8 +521,7 @@ public class DoPropfind extends AbstractMethod {
 				xmlWriter.writeElement("DAV::lockscope", TAG.CLOSING);
 
 				xmlWriter.writeElement("DAV::locktype", TAG.OPENING);
-				xmlWriter.writeElement("DAV::" + lo.getType(),
-						TAG.NO_CONTENT);
+				xmlWriter.writeElement("DAV::" + lo.getType(), TAG.NO_CONTENT);
 				xmlWriter.writeElement("DAV::locktype", TAG.CLOSING);
 
 				xmlWriter.writeElement("DAV::lockentry", TAG.CLOSING);
