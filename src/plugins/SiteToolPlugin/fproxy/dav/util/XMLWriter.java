@@ -55,6 +55,7 @@ public class XMLWriter {
      * Is true until the root element is written
      */
     private boolean _isRootElement = true;
+    private int _indent = 0;
 
     // ----------------------------------------------------------- Constructors
 
@@ -151,6 +152,28 @@ public class XMLWriter {
             _writer.append("<" + name + nsdecl + "/>");
             break;
         }
+    }
+
+    public void newLine() throws IOException {
+        _writer.append('\n');
+        for(int i=0;i<_indent;i++) _writer.append(' ');
+    }
+
+    public void indentNl() throws IOException {
+    	_writer.append('\n');
+        _indent++;
+        for(int i=0;i<_indent;i++) _writer.append(' ');
+    }
+
+    public void unIndentNl() throws IOException {
+    	_writer.append('\n');
+        _indent--;
+        for(int i=0;i<_indent;i++) _writer.append(' ');
+    }
+    
+    public void writeElementIndent(String name, TAG type) throws IOException {
+    	writeElement(name, type);
+    	indentNl();
     }
 
     /**
