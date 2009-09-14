@@ -1,6 +1,5 @@
 package plugins.SiteToolPlugin;
 
-import java.io.File;
 import java.util.HashMap;
 
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
@@ -12,7 +11,7 @@ import plugins.SiteToolPlugin.toadlets.SessionsToadlet;
 import plugins.SiteToolPlugin.toadlets.SitesToadlet;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterface;
-import freenet.l10n.L10n.LANGUAGE;
+import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.pluginmanager.FredPlugin;
 import freenet.pluginmanager.FredPluginFCP;
 import freenet.pluginmanager.FredPluginL10n;
@@ -66,15 +65,15 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 
 		// Visible pages
 		HomeToadlet homeToadlet = new HomeToadlet(pluginContext);
-		webInterface.registerVisible(homeToadlet, PLUGIN_CATEGORY, PLUGIN_URI+ "/", "Tools", "Tool page");
+		webInterface.registerVisible(homeToadlet, PLUGIN_CATEGORY, "Tools", "Tool page");
 		SitesToadlet sitesToadlet = new SitesToadlet(pluginContext);
-		webInterface.registerVisible(sitesToadlet, PLUGIN_CATEGORY, PLUGIN_URI + "/Sites", "Sites Manager", "Upload and manage your sites");
+		webInterface.registerVisible(sitesToadlet, PLUGIN_CATEGORY, "Sites Manager", "Upload and manage your sites");
 		SessionsToadlet sessionsToadlet = new SessionsToadlet(pluginContext);
-		webInterface.registerVisible(sessionsToadlet, PLUGIN_CATEGORY, PLUGIN_URI + "/Sessions", "Session Monitor", "View and manage sessions");
+		webInterface.registerVisible(sessionsToadlet, PLUGIN_CATEGORY, "Session Monitor", "View and manage sessions");
 
 		// Invisible pages
 		EditSiteToadlet editSiteToadlet = new EditSiteToadlet(pluginContext, sitesToadlet);
-		webInterface.registerInvisible(editSiteToadlet, PLUGIN_URI + "/EditSite");
+		webInterface.registerInvisible(editSiteToadlet);
 
 		// set up DAV
 		// download dir
@@ -93,15 +92,14 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 
 		// Invisible pages
 		DAVToadlet davToadlet1 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/downloads", sitesToadlet, store1, resLocks1, false);
-		webInterface.registerInvisible(davToadlet1, PLUGIN_URI + "/DAV/downloads");
-		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/tempdl", sitesToadlet, store2, resLocks2, true);
-		webInterface.registerInvisible(davToadlet2, PLUGIN_URI + "/DAV/tempdl");
+		webInterface.registerInvisible(davToadlet1);
+		DAVToadlet davToadlet2 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/tempdownloads", sitesToadlet, store2, resLocks2, true);
+		webInterface.registerInvisible(davToadlet2);
 		DAVToadlet davToadlet3 = new DAVToadlet(pluginContext, SiteToolPlugin.PLUGIN_URI, "DAV/siteedit", sitesToadlet, store3, resLocks3, true);
-		webInterface.registerInvisible(davToadlet3, PLUGIN_URI + "/DAV/SiteEdit");
+		webInterface.registerInvisible(davToadlet3);
 	}
 
 	public void terminate() {
-		webInterface.removeNavigationCategory(PLUGIN_CATEGORY);
 		webInterface.kill();
 		fcpHandler.kill();
 		fcpHandler = null;

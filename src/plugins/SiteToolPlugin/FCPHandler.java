@@ -65,6 +65,88 @@ public class FCPHandler {
 			return;
 		}
 
+		if ("IsInsertUSK".equals(command)) {
+			FreenetURI testUri;
+			try {
+				testUri = new FreenetURI(params.get("URI"));
+			} catch (MalformedURLException e) {
+				FCPHandler.sendError(replysender, STFCPException.INVALID_INSERTURI, identifier, "Invalid URI");
+				return;
+			}
+			if (testUri.isSSKForUSK() || testUri.isUSK()) {
+				byte[] extra = testUri.getExtra();
+				boolean isPriv = (extra[1] == 1);
+				SimpleFieldSet sfs = new SimpleFieldSet(true);
+				sfs.putOverwrite("Status", "Success");
+				sfs.put("Code", 0);
+				sfs.putSingle("Identifier", identifier);
+				sfs.putSingle("Description", "check successful done");
+				sfs.put("IsInsertUSK", isPriv);
+				replysender.send(sfs);
+				return;
+			}
+			FCPHandler.sendError(replysender, STFCPException.INVALID_INSERTURI, identifier, "Invalid URI");
+			return;
+		}
+
+		if ("HGSanitizeURI".equals(command)) {
+			FreenetURI testUri;
+			FreenetURI baseUri;
+			FreenetURI sUri;
+			FreenetURI uUri;
+			FreenetURI bsUri;
+			FreenetURI buUri;
+			long origEdition;
+			try {
+				testUri = new FreenetURI(params.get("URI"));
+			} catch (MalformedURLException e) {
+				FCPHandler.sendError(replysender, STFCPException.INVALID_INSERTURI, identifier, "Invalid URI");
+				return;
+			}
+			if (!(testUri.isSSKForUSK() || testUri.isUSK())) {
+				FCPHandler.sendError(replysender, STFCPException.INVALID_INSERTURI, identifier, "Invalid URI");
+				return;
+			}
+			if (testUri.hasMetaStrings()) {
+				testUri = testUri.setMetaString(null);
+			}
+			origEdition = testUri.getSuggestedEdition();
+
+			baseUri = testUri.setSuggestedEdition(0);
+
+			// turn USK into SSK
+			if (testUri.isUSK()) {
+				uUri = testUri;
+				sUri = testUri.sskForUSK();
+				buUri = baseUri;
+				bsUri = baseUri.sskForUSK();
+			} else {
+				uUri = testUri.uskForSSK();
+				sUri = testUri;
+				buUri = baseUri.uskForSSK();
+				bsUri = baseUri;
+			}
+			testUri = testUri.setSuggestedEdition(origEdition);
+			
+			byte[] extra = testUri.getExtra();
+			boolean isPriv = (extra[1] == 1);
+			SimpleFieldSet sfs = new SimpleFieldSet(true);
+			sfs.putOverwrite("Status", "Success");
+			sfs.put("Code", 0);
+			sfs.putSingle("Identifier", identifier);
+			sfs.putSingle("Description", "sanitize");
+			sfs.put("IsPrivate", isPriv);
+			sfs.put("Edition", origEdition);
+			sfs.putSingle("OrigURI", testUri.toString(false, false));
+			sfs.putSingle("BaseOrigURI", baseUri.toString(false, false));
+			sfs.putSingle("USK", uUri.toString(false, false));
+			sfs.putSingle("SSK", sUri.toString(false, false));
+			sfs.putSingle("BaseUSK", buUri.toString(false, false));
+			sfs.putSingle("BaseSSK", bsUri.toString(false, false));
+			replysender.send(sfs);
+			return;
+		}
+
 		if ("UpdateSite".equals(command)) {
 			FCPHandler.sendNOP(replysender, identifier);
 			return;
