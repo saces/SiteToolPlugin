@@ -368,8 +368,8 @@ public abstract class AbstractMethod implements IMethodExecutor {
         Enumeration<String> pathList = errorList.keys();
         while (pathList.hasMoreElements()) {
 
-            String errorPath = (String) pathList.nextElement();
-            int errorCode = ((Integer) errorList.get(errorPath)).intValue();
+            String errorPath = pathList.nextElement();
+            int errorCode = errorList.get(errorPath).intValue();
 
             xmlWriter.writeElement("DAV::response", TAG.OPENING);
 
