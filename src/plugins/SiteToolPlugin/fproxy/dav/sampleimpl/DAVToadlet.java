@@ -24,6 +24,7 @@ import plugins.SiteToolPlugin.fproxy.dav.methods.DoPut;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoUnlock;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterfaceToadlet;
+import freenet.client.DefaultMIMETypes;
 import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
@@ -90,7 +91,7 @@ public class DAVToadlet extends WebInterfaceToadlet {
 		// TODO / FIXME
 		mimeTyper = new IMimeTyper() {
             public String getMimeType(String path) {
-                return "mimetype";
+                return DefaultMIMETypes.guessMIMEType(path, false);
             }
         };
         doGet = new DoGet(this, _store, dftIndexFile, insteadOf404, _resLocks, mimeTyper, nocontentLenghHeaders);

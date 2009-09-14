@@ -252,9 +252,10 @@ public class DoPropfind extends AbstractMethod {
 	 */
 	private void parseProperties(ITransaction transaction, HTTPRequest req,
 			XMLWriter xmlWriter, String path, FindType propertyFindType,
-			Vector<String> propertiesVector, String mimeType)
+			Vector<String> propertiesVector, String mimeType2)
 			throws WebDAVException, IOException {
 
+		String mimeType = _mimeTyper.getMimeType(path);
 		IStoredObject so = _store.getStoredObject(transaction, path);
 
 		boolean isFolder = so.isFolder();
