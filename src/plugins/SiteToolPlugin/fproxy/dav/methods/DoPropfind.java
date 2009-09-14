@@ -369,7 +369,7 @@ public class DoPropfind extends AbstractMethod {
 
 			while (properties.hasMoreElements()) {
 
-				String property = (String) properties.nextElement();
+				String property = properties.nextElement();
 
 				if (property.equals("DAV::creationdate")) {
 					xmlWriter.writeProperty("DAV::creationdate", creationdate);
@@ -454,7 +454,7 @@ public class DoPropfind extends AbstractMethod {
 				xmlWriter.writeElement("DAV::prop", TAG.OPENING);
 
 				while (propertiesNotFoundList.hasMoreElements()) {
-					xmlWriter.writeElement((String) propertiesNotFoundList
+					xmlWriter.writeElement(propertiesNotFoundList
 							.nextElement(), TAG.NO_CONTENT);
 				}
 
