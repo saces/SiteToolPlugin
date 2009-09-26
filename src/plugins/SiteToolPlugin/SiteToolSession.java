@@ -3,8 +3,6 @@ package plugins.SiteToolPlugin;
 import java.util.HashMap;
 import java.util.Set;
 
-import freenet.client.InsertException;
-import freenet.client.async.DatabaseDisabledException;
 import freenet.client.async.ManifestElement;
 import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginNotFoundException;
@@ -51,7 +49,8 @@ public class SiteToolSession {
 		//FIXME
 		FCPHandler.sendNOP(replysender, identifier);
 	}
-	
+
+	@SuppressWarnings("unchecked")
 	private HashMap<String, Object> findDir(HashMap<String, Object> parent, String name, boolean create) {
 		String[] s = name.split("/", 2); 
 		Object o = parent.get(s[0]);
@@ -148,6 +147,7 @@ public class SiteToolSession {
 		FCPHandler.sendSuccess(replysender2, identifer, "List End");
 	}
 
+	@SuppressWarnings("unchecked")
 	private void listItems(PluginReplySender replysender2, String identifer, String prefix, HashMap<String, Object> md) throws PluginNotFoundException {
 		Set<String> set = md.keySet();
 		for(String name:set) {

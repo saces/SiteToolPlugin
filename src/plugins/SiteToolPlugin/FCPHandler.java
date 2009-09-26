@@ -5,13 +5,13 @@ import java.net.MalformedURLException;
 import java.util.HashMap;
 
 import plugins.KeyExplorer.KeyExplorerUtils;
+import plugins.fproxy.lib.PluginContext;
 import freenet.client.FetchException;
 import freenet.client.Metadata;
 import freenet.client.MetadataParseException;
 import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
-import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
 import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
@@ -26,12 +26,12 @@ public class FCPHandler {
 	}
 
 
-	private final SessionManager sessionManager;
-	private final PluginRespirator pluginRespirator;
+	private final SessionManager sessionMgr;
+	private final PluginContext pCtx;
 
-	FCPHandler(SessionManager sessionManager, PluginRespirator pluginRespirator) {
-		this.sessionManager = sessionManager;
-		this.pluginRespirator= pluginRespirator; 
+	FCPHandler(SessionManager sessionManager, PluginContext pluginContext) {
+		sessionMgr = sessionManager;
+		pCtx = pluginContext; 
 	}
 
 	public void kill() {
@@ -152,14 +152,14 @@ public class FCPHandler {
 			return;
 		}
 
-		SiteToolSession session = sessionManager.getSession(identifier);
+		SiteToolSession session = null; //sessionManager.getSession(identifier);
 
 		if ("NewSession".equals(command)) {
 			if (session != null) {
 				FCPHandler.sendError(replysender, STFCPException.DUPLICATE_SESSION, identifier, "Session already exists.");
 				return;
 			}
-			session = sessionManager.newSession(replysender, identifier);
+			//session = sessionManager.newSession(replysender, identifier);
 			FCPHandler.sendSuccess(replysender, identifier, "New Session created");
 			return;
 		}
@@ -192,7 +192,7 @@ public class FCPHandler {
 
 			Metadata md;
 			try {
-				md = KeyExplorerUtils.simpleManifestGet(pluginRespirator, oldUri);
+				md = KeyExplorerUtils.simpleManifestGet(pCtx.pluginRespirator, oldUri);
 			} catch (MetadataParseException e) {
 				Logger.error(this, "Parameter 'OldURI' failed to fetch.", e);
 				FCPHandler.sendError(replysender, STFCPException.INVALID_OLDURI, identifier, "Parameter 'OldURI' failed to fetch: "+e.getMessage());

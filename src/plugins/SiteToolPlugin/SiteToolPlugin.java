@@ -1,5 +1,7 @@
 package plugins.SiteToolPlugin;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
@@ -31,9 +33,9 @@ import freenet.support.api.Bucket;
 public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 		FredPluginVersioned, FredPluginRealVersioned, FredPluginThreadless, FredPluginL10n {
 
-	private static final long revision = 6;
 	public static final String PLUGIN_URI = "/SiteTool";
 	private static final String PLUGIN_CATEGORY = "Site Tools";
+	public static final String PLUGIN_TITLE = "SiteTool Plugin";
 
 	private static volatile boolean logMINOR;
 	private static volatile boolean logDEBUG;
@@ -50,25 +52,37 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 	private WebInterface webInterface;
 
 	private SessionManager sessionManager;
+	private SiteManager siteManager;
 	private FCPHandler fcpHandler;
 
 	public void runPlugin(PluginRespirator pluginRespirator) {
 		this.pr = pluginRespirator;
 
-		sessionManager = new SessionManager();
-		fcpHandler = new FCPHandler(sessionManager, pluginRespirator);
-
 		pluginContext = new PluginContext(pluginRespirator);
+
+		File config = new File("sitetool.ini");
+		try {
+			siteManager = new SiteManager(config);
+		} catch (IOException e) {
+			Logger.error(this, "Error while reading config.", e);
+			e.printStackTrace();
+			siteManager = null;
+		}
+
+		sessionManager = new SessionManager(pluginContext.clientCore.getExecutor());
+
+		fcpHandler = new FCPHandler(sessionManager, pluginContext);
+
 		webInterface = new WebInterface(pluginContext);
 
 		webInterface.addNavigationCategory(PLUGIN_URI+"/", PLUGIN_CATEGORY, "Toolbox for maintaining sites and more...", this);
 
 		// Visible pages
-		HomeToadlet homeToadlet = new HomeToadlet(pluginContext);
+		HomeToadlet homeToadlet = new HomeToadlet(pluginContext, sessionManager);
 		webInterface.registerVisible(homeToadlet, PLUGIN_CATEGORY, "Tools", "Tool page");
-		SitesToadlet sitesToadlet = new SitesToadlet(pluginContext);
+		SitesToadlet sitesToadlet = new SitesToadlet(pluginContext, siteManager);
 		webInterface.registerVisible(sitesToadlet, PLUGIN_CATEGORY, "Sites Manager", "Upload and manage your sites");
-		SessionsToadlet sessionsToadlet = new SessionsToadlet(pluginContext);
+		SessionsToadlet sessionsToadlet = new SessionsToadlet(pluginContext, sessionManager);
 		webInterface.registerVisible(sessionsToadlet, PLUGIN_CATEGORY, "Session Monitor", "View and manage sessions");
 
 		// Invisible pages
@@ -108,7 +122,7 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 	}
 
 	public String getVersion() {
-		return "STP 0.0.0 r" + revision;
+		return Version.longVersionString;
 	}
 
 	public void handle(PluginReplySender replysender, SimpleFieldSet params, Bucket data, int accesstype) {
@@ -120,12 +134,12 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 				FCPHandler.sendError(replysender, STFCPException.INTERNAL, "<unknown>", uoe.toString());
 			}
 		} catch (PluginNotFoundException pnfe) {
-			Logger.error(this, "Connction to request sender Lost.", pnfe);
+			Logger.error(this, "Connection to request sender Lost.", pnfe);
 		}
 	}
 
 	public long getRealVersion() {
-		return revision;
+		return Version.version;
 	}
 
 	public String getString(String key) {

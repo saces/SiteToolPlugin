@@ -34,10 +34,8 @@ public class SiteParser {
 				ClientContext context) {
 			if (meta.isSimpleManifest()) {
 				_meta = meta;
-				//System.out.println("found a SimpleManifest");
 				return true;
 			}
-			//System.out.println("not SM: "+meta.dump());
 			return false;
 		}
 	}
@@ -54,14 +52,6 @@ public class SiteParser {
 		_multilevel = multilevel;
 		_uri = uri;
 		_pr = pr;
-	}
-
-	private SiteParser(SiteParser sp, FreenetURI uri) {
-		_deep = sp._deep;
-		_cb = sp._cb;
-		_multilevel = sp._multilevel;
-		_uri = uri;
-		_pr = sp._pr;
 	}
 
 	public void parseSite() throws FetchException, IOException {
@@ -85,10 +75,8 @@ public class SiteParser {
 			throw new FetchException(FetchException.INVALID_METADATA, "URI does not point to a SimpleManifest");
 		}
 		HashMap<String, Metadata> docs = snooper._meta.getDocuments();
-		
 		parseMetadata(docs, "/");
 		_cb.finish();
-		
 	}
 
 	private void parseMetadata(HashMap<String, Metadata> docs, String prefix) throws IOException {

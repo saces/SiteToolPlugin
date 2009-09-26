@@ -84,7 +84,6 @@ public class SiteCollector implements ISiteParserCallback {
 
 	public void addItem(String name, Bucket data) throws IOException {
 		_collector.addItem("content" + name, data);
-		//System.err.println("AddItem: "+name+" ("+data.size()+')');
 	}
 
 	public void addReport(String name, String report) {
@@ -92,7 +91,6 @@ public class SiteCollector implements ISiteParserCallback {
 		_sb.append(" : ");
 		_sb.append(report);
 		_sb.append('\n');
-		//System.err.println("Report: "+name+" : "+report);
 	}
 
 	public void finish() throws IOException {

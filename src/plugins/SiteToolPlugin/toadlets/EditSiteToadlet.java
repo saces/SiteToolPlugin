@@ -7,7 +7,6 @@ import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.PageNode;
-import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
@@ -22,7 +21,7 @@ public class EditSiteToadlet extends WebInterfaceToadlet {
 		this.sitesToadlet = sitesToadlet2;
 	}
 
-	public void handleMethodGET(URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException, RedirectException {
+	public void handleMethodGET(URI uri, HTTPRequest req, ToadletContext ctx) throws ToadletContextClosedException, IOException {
 		PageNode pageNode = pluginContext.pageMaker.getPageNode("Site Tool Plugin", ctx);
 		HTMLNode outer = pageNode.outer;
 		HTMLNode contentNode = pageNode.content;
