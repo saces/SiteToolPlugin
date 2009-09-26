@@ -249,7 +249,7 @@ public class WebDAVStatus {
         if (!_mapStatusCodes.containsKey(intKey)) {
             return "";
         } else {
-            return (String) _mapStatusCodes.get(intKey);
+            return _mapStatusCodes.get(intKey);
         }
     }
 
