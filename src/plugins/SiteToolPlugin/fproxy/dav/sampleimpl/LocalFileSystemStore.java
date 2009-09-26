@@ -156,7 +156,7 @@ public class LocalFileSystemStore implements IWebDAVStore {
                 Logger.debug(this, "Child " + i + ": " + name);
             }
             childrenNames = new String[childList.size()];
-            childrenNames = (String[]) childList.toArray(childrenNames);
+            childrenNames = childList.toArray(childrenNames);
         }
         return childrenNames;
     }

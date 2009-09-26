@@ -69,7 +69,7 @@ public class URLEncoder {
         }
 
         for (int i = 0; i < path.length(); i++) {
-            int c = (int) path.charAt(i);
+            int c = path.charAt(i);
             if (_safeCharacters.get(c)) {
                 rewrittenPath.append((char) c);
             } else {
@@ -86,8 +86,8 @@ public class URLEncoder {
                     // Converting each byte in the buffer
                     byte toEncode = ba[j];
                     rewrittenPath.append('%');
-                    int low = (int) (toEncode & 0x0f);
-                    int high = (int) ((toEncode & 0xf0) >> 4);
+                    int low = (toEncode & 0x0f);
+                    int high = ((toEncode & 0xf0) >> 4);
                     rewrittenPath.append(HEXADECIMAL[high]);
                     rewrittenPath.append(HEXADECIMAL[low]);
                 }

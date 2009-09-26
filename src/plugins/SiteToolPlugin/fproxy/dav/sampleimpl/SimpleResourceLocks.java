@@ -224,7 +224,7 @@ public class SimpleResourceLocks implements IResourceLocks {
     public ILockedObject getLockedObjectByPath(ITransaction transaction,
             String path) {
         if (_locks.containsKey(path)) {
-            return (SimpleLockedObject) this._locks.get(path);
+            return this._locks.get(path);
         } else {
             return null;
         }
@@ -242,7 +242,7 @@ public class SimpleResourceLocks implements IResourceLocks {
     public ILockedObject getTempLockedObjectByPath(ITransaction transaction,
             String path) {
         if (_tempLocks.containsKey(path)) {
-            return (ILockedObject) this._tempLocks.get(path);
+            return this._tempLocks.get(path);
         } else {
             return null;
         }
