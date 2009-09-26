@@ -4,7 +4,6 @@ import java.io.FilterWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class XMLWriter {
 	protected final static int END = 3;
 
 	/** Write to XML document */
-	protected PrintWriter mOut;
+	protected Writer mOut;
 
 	/** indent */
 	protected Indent indent;
@@ -63,7 +62,7 @@ public class XMLWriter {
 	 */
 	public XMLWriter(OutputStream out, Map<String, String> namespaces) {
 		try {
-			mOut = new PrintWriter(new OutputStreamWriter(out, "UTF-8"));
+			mOut = new OutputStreamWriter(out, "UTF-8");
 		} catch (UnsupportedEncodingException e) {
 			throw new RuntimeException("Impossible, JVM doesnt support UTF-8");
 		}
@@ -74,9 +73,10 @@ public class XMLWriter {
 
 	/**
 	 * Write &lt;?xml version="1.0"?&gt;
+	 * @throws IOException 
 	 */
-	public void writeXMLHeader() {
-		mOut.println("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+	public void writeXMLHeader() throws IOException {
+		mOut.write("<?xml version=\"1.0\" encoding=\"utf-8\"?>\n");
 	}
 
 	/**
@@ -88,21 +88,22 @@ public class XMLWriter {
 	 *            public Id. May be Null.
 	 * @param systemId
 	 *            system Id.
+	 * @throws IOException 
 	 */
-	public void writeDocumentType(String name, String publicId, String systemId) {
-		mOut.print("<!DOCTYPE ");
-		mOut.print(name);
-		mOut.print(' ');
+	public void writeDocumentType(String name, String publicId, String systemId) throws IOException {
+		mOut.write("<!DOCTYPE ");
+		mOut.write(name);
+		mOut.write(' ');
 
 		if (publicId != null) {
-			mOut.print('"');
-			mOut.print(publicId);
-			mOut.print("\" ");
+			mOut.write('"');
+			mOut.write(publicId);
+			mOut.write("\" ");
 		}
 
-		mOut.print("SYSTEM \"");
-		mOut.print(systemId);
-		mOut.println("\">");
+		mOut.write("SYSTEM \"");
+		mOut.write(systemId);
+		mOut.write("\">\n");
 	}
 
 	/**
@@ -139,12 +140,12 @@ public class XMLWriter {
 		}
 
 		state = ATTRIBUTE;
-		mOut.print(' ');
-		mOut.print(name);
-		mOut.print('=');
-		mOut.print('"');
+		mOut.write(' ');
+		mOut.write(name);
+		mOut.write('=');
+		mOut.write('"');
 		mFilter.write(value);
-		mOut.print('"');
+		mOut.write('"');
 	}
 
 	/**
@@ -153,7 +154,7 @@ public class XMLWriter {
 	public void content(String content) throws IOException {
 		// close the last tag
 		if ((state == START) || (state == ATTRIBUTE)) {
-			mOut.print('>');
+			mOut.write('>');
 		}
 
 		mFilter.write(content);
@@ -162,8 +163,9 @@ public class XMLWriter {
 
 	/**
 	 * Write start tag.
+	 * @throws IOException 
 	 */
-	public void start(String name) {
+	public void start(String name) throws IOException {
 		StringBuffer nsdecl = new StringBuffer();
 
 		if (_isRootElement) {
@@ -197,21 +199,22 @@ public class XMLWriter {
 
 		// close the last tag
 		if ((state == START) || (state == ATTRIBUTE)) {
-			mOut.println('>');
+			mOut.write(">\n");
 		}
 
-		mOut.print(indent);
-		mOut.print('<');
-		mOut.print(name + nsdecl);
+		mOut.write(indent.toString());
+		mOut.write('<');
+		mOut.write(name + nsdecl);
 		indent.indent();
 		state = START;
 	}
 
 	/**
 	 * Write end tag.
+	 * @throws IOException 
 	 * 
 	 */
-	public void end(String name) {
+	public void end(String name) throws IOException {
 		indent.unIndent();
 
 		StringBuffer nsdecl = new StringBuffer();
@@ -235,16 +238,16 @@ public class XMLWriter {
 
 
 		if ((state == START) || (state == ATTRIBUTE)) {
-			mOut.println("/>");
+			mOut.write("/>\n");
 		} else if (state == CONTENT) {
-			mOut.print("</");
-			mOut.print(name + nsdecl);
-			mOut.println('>');
+			mOut.write("</");
+			mOut.write(name + nsdecl);
+			mOut.write("'>\n");
 		} else {
-			mOut.print(indent);
-			mOut.print("</");
-			mOut.print(name + nsdecl);
-			mOut.println('>');
+			mOut.write(indent.toString());
+			mOut.write("</");
+			mOut.write(name + nsdecl);
+			mOut.write(">\n");
 		}
 
 		state = END;
@@ -305,14 +308,14 @@ public class XMLWriter {
 
 	public void writeProperty(String name, String value) throws IOException {
 		start(name);
-        content(value);
-        end(name);
-    }
-	
+		content(value);
+		end(name);
+	}
+
 	public void writeData(String data) throws IOException {
 		// close the last tag
 		if ((state == START) || (state == ATTRIBUTE)) {
-			mOut.print('>');
+			mOut.write('>');
 		}
 
 		mOut.write("<![CDATA[" + data + "]]>");
@@ -343,7 +346,7 @@ public class XMLWriter {
 		/** entity substitution for > */
 		protected char[] GT = { '&', 'g', 't', ';' };
 
-		/** entity substitution for > */
+		/** entity substitution for & */
 		protected char[] AMP = { '&', 'a', 'm', 'p', ';' };
 
 		/**
