@@ -24,7 +24,6 @@ import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
-import freenet.clients.http.ToadletContextImpl;
 import freenet.support.Logger;
 import freenet.support.MultiValueTable;
 import freenet.support.TimeUtil;
@@ -37,7 +36,6 @@ import plugins.SiteToolPlugin.fproxy.dav.api.ITransaction;
 import plugins.SiteToolPlugin.fproxy.dav.api.IWebDAVStore;
 import plugins.SiteToolPlugin.fproxy.dav.api.WebDAVStatus;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.AccessDeniedException;
-import plugins.SiteToolPlugin.fproxy.dav.exceptions.LockFailedException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.ObjectAlreadyExistsException;
 import plugins.SiteToolPlugin.fproxy.dav.exceptions.WebDAVException;
 
@@ -190,10 +188,25 @@ public class DoHead extends AbstractMethod {
 
     }
 
+    /**
+	 * @param transaction 
+     * @param path 
+     * @param req 
+     * @param ctx 
+     * @throws IOException  
+     * @throws ToadletContextClosedException 
+     * @throws WebDAVException 
+	 */
     protected void folderBody(ITransaction transaction, String path, HTTPRequest req, ToadletContext ctx) throws IOException, ToadletContextClosedException, WebDAVException {
         // no body for HEAD
     }
 
+    /**
+	 * @param transaction 
+     * @param path 
+     * @param ctx 
+     * @throws IOException  
+	 */
     protected void doBody(ITransaction transaction, String path, ToadletContext ctx) throws IOException {
         // no body for HEAD
     }
