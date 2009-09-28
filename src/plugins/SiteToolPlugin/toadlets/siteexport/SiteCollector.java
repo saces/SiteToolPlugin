@@ -44,7 +44,6 @@ public class SiteCollector implements ISiteParserCallback {
 			BucketTools.copyTo(data, __zos, data.size());
 			__zos.closeEntry();
 		}
-
 	}
 
 	private class TarCollector implements Collector {
@@ -68,7 +67,6 @@ public class SiteCollector implements ISiteParserCallback {
 			BucketTools.copyTo(data, __tos, size);
 			__tos.closeEntry();
 		}
-
 	}
 
 	public SiteCollector(OutputStream os, boolean zip, BucketFactory bf) {
@@ -100,5 +98,4 @@ public class SiteCollector implements ISiteParserCallback {
 		}
 		_collector.finish();
 	}
-
 }

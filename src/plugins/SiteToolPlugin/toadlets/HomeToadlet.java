@@ -8,6 +8,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import plugins.KeyExplorer.KeyExplorerUtils;
+import plugins.SiteToolPlugin.Constants;
 import plugins.SiteToolPlugin.SessionManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.exception.DuplicateSessionIDException;
@@ -33,11 +34,6 @@ public class HomeToadlet extends WebInterfaceToadlet {
 	private final static String CMD_BLOBIMPORT = "blobimport";
 	private final static String CMD_USKFASTHEAL = "healuskfast";
 	private final static String CMD_USKFULLHEAL = "healuskfull";
-
-	private final static String DL_TYPE_TAR7Z = "tar7z";
-	private final static String DL_TYPE_TARGZ = "targz";
-	private final static String DL_TYPE_TAR = "tar";
-	private final static String DL_TYPE_ZIP = "zip";
 
 	private final static String PARAM_URI = "key";
 	private final static String PARAM_TYPE = "archivetype";
@@ -92,16 +88,16 @@ public class HomeToadlet extends WebInterfaceToadlet {
 
 			String mime = null;
 			String ext = null;
-			if (DL_TYPE_TAR7Z.equals(archiveType)) {
+			if (Constants.DL_TYPE_TAR7Z.equals(archiveType)) {
 				mime = "application/x-lzma-compressed-tar";
 				ext = "tar.lzma";
-			} else if (DL_TYPE_TARGZ.equals(archiveType)) {
+			} else if (Constants.DL_TYPE_TARGZ.equals(archiveType)) {
 				mime = "application/x-gtar";
 				ext = "tar.gz";	
-			} else if (DL_TYPE_TAR.equals(archiveType)) {
+			} else if (Constants.DL_TYPE_TAR.equals(archiveType)) {
 				mime = "application/x-tar";
 				ext = "tar";
-			} else if (DL_TYPE_ZIP.equals(archiveType)) {
+			} else if (Constants.DL_TYPE_ZIP.equals(archiveType)) {
 				mime = "application/zip";
 				ext = "zip";
 			} else {
@@ -115,7 +111,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			}
 
 			String sessionid = furi.toString(false, false);
-			SiteDownloadSession session = new SiteDownloadSession(sessionid);
+			SiteDownloadSession session = new SiteDownloadSession(sessionid, furi, pluginContext.clientCore.tempBucketFactory, archiveType, pluginContext.hlsc, pluginContext.clientCore.clientContext);
 			try {
 				sessionMgr.addSession(session);
 				sessionMgr.startSession(sessionid);
@@ -188,7 +184,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 	private void makeArchive(OutputStream out, FreenetURI furi, boolean zip, List<String> errors) {
 		
 		SiteCollector collector = new SiteCollector(out, zip, pluginContext.clientCore.tempBucketFactory);
-		SiteParser parser = new SiteParser(collector, furi, true, true, pluginContext.pluginRespirator);
+		SiteParser parser = null; //new SiteParser(collector, furi, true, true, pluginContext.pluginRespirator);
 		try {
 			parser.parseSite();
 		} catch (FetchException e) {
@@ -230,30 +226,30 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		HTMLNode box11Form = pluginContext.pluginRespirator.addFormChild(box11, path(), "uriForm");
 		String defaulttype;
 		if (type==null)
-			defaulttype = DL_TYPE_TAR7Z;
+			defaulttype = Constants.DL_TYPE_TAR7Z;
 		else
 			defaulttype = type;
 
 		box11Form.addChild("#", "Select archive format: \u00a0 ");
-		if (defaulttype.equals(DL_TYPE_TAR7Z))
-			box11Form.addChild("input", new String[] { "type", "name", "value", "checked"}, new String[] { "radio", PARAM_TYPE, DL_TYPE_TAR7Z, "checked" }, "tar.lzma");
+		if (defaulttype.equals(Constants.DL_TYPE_TAR7Z))
+			box11Form.addChild("input", new String[] { "type", "name", "value", "checked"}, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TAR7Z, "checked" }, "tar.lzma");
 		else
-			box11Form.addChild("input", new String[] { "type", "name", "value"}, new String[] { "radio", PARAM_TYPE, DL_TYPE_TAR7Z }, "tar.lzma");
+			box11Form.addChild("input", new String[] { "type", "name", "value"}, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TAR7Z }, "tar.lzma");
 		box11Form.addChild("#", "\u00a0");
-		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(DL_TYPE_TARGZ))
-			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_TARGZ, "checked" }, "tar.gz");
+		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(Constants.DL_TYPE_TARGZ))
+			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TARGZ, "checked" }, "tar.gz");
 		else	
-			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_TARGZ }, "tar.gz");
+			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TARGZ }, "tar.gz");
 		box11Form.addChild("#", "\u00a0");
-		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(DL_TYPE_TAR))
-			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_TAR, "checked" }, "tar");
+		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(Constants.DL_TYPE_TAR))
+			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TAR, "checked" }, "tar");
 		else
-			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_TAR }, "tar");
+			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_TAR }, "tar");
 		box11Form.addChild("#", "\u00a0");
-		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(DL_TYPE_ZIP))
-			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_ZIP, "checked" }, "zip");
+		if (isCommand(what, CMD_SITEDOWNLOAD) && defaulttype.equals(Constants.DL_TYPE_ZIP))
+			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_ZIP, "checked" }, "zip");
 		else
-			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, DL_TYPE_ZIP }, "zip");
+			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_ZIP }, "zip");
 		box11Form.addChild("%", "<BR />");
 		box11Form.addChild("#", "Site URI: \u00a0 ");
 		if (isCommand(what, CMD_SITEDOWNLOAD) && uri != null)

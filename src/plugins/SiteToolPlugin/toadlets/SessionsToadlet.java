@@ -25,6 +25,7 @@ public class SessionsToadlet extends WebInterfaceToadlet {
 	private static final String CMD_START = "start";
 	private static final String CMD_CANCEL = "cancel";
 	private static final String CMD_REMOVE = "remove";
+	private static final String CMD_GRAB = "grab";
 
 	private final SessionManager sessionMgr;
 
@@ -65,6 +66,9 @@ public class SessionsToadlet extends WebInterfaceToadlet {
 			session.cancelSession(pluginContext.clientCore.getExecutor());
 		} else if (request.isPartSet(CMD_REMOVE)) {
 			sessionMgr.removeSession(sessionid);
+		} else if (request.isPartSet(CMD_GRAB)) {
+			session.sendResult(ctx);
+			return;
 		} else {
 			sendErrorPage(ctx, 400, "Bad request", "Malformed Request, no proper command");
 			return;
@@ -118,7 +122,7 @@ public class SessionsToadlet extends WebInterfaceToadlet {
 		kill9Form.addChild("#", "\u00a0Try to remove session the hard way. Be carefully, this may hurt the node!");
 		kill9Form.addChild("br");
 
-		// the regular start/stop buttons depends on status
+		// the regular start/stop etc buttons depends on status
 		SessionStatus status = session.getStatus();
 
 		String statusstring;
@@ -135,29 +139,33 @@ public class SessionsToadlet extends WebInterfaceToadlet {
 		} else if (status == SessionStatus.DONE) {
 			statusstring = "Done";
 			if (session.canRetry()) {
-				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_START, "Start" });
+				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_START, "Restart" });
+			}
+			if (session.haveResult()) {
+				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_GRAB, "Grab it" });
 			}
 			kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_REMOVE, "Remove" });
 		} else if (status == SessionStatus.ERROR) {
 			statusstring = "Error";
 			if (session.canRetry()) {
-				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_START, "Start" });
+				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_START, "Restart" });
+			}
+			if (session.haveResult()) {
+				kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_GRAB, "Grab it" });
 			}
 			kill9Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_REMOVE, "Remove" });
 		} else {
-			statusstring = "Invalid Session status";
+			statusstring = "Unknown session status";
 		}
 
 		InfoboxNode box2 = pluginContext.pageMaker.getInfobox(statusstring);
 		HTMLNode extraBox = box2.outer;
 		HTMLNode extraContent = box2.content;
 
-		HTMLNode extra = session.getExtraStatusPanel();
-
-		if (extra == null) {
-			extraContent.addChild("#", "<Empty>");
+		if (status == SessionStatus.ERROR) {
+			extraContent.addChild("#", session.getLastError().getLocalizedMessage());
 		} else {
-			extraContent.addChild(extra);
+			session.getExtraStatusPanel(extraContent);
 		}
 		kill9Form.addChild(extraBox);
 

@@ -32,9 +32,8 @@ public class USKHealSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public HTMLNode getExtraStatusPanel() {
-		// TODO Auto-generated method stub
-		return null;
+	public void getExtraStatusPanel(HTMLNode node) {
+		node.addChild("#", "<Empty>");
 	}
 
 	@Override

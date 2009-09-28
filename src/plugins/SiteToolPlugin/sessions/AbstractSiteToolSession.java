@@ -1,5 +1,9 @@
 package plugins.SiteToolPlugin.sessions;
 
+import java.io.IOException;
+
+import freenet.clients.http.ToadletContext;
+import freenet.clients.http.ToadletContextClosedException;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
 import freenet.support.Executor;
@@ -36,7 +40,7 @@ public abstract class AbstractSiteToolSession {
 
 	public abstract void cancel();
 
-	public abstract HTMLNode getExtraStatusPanel();
+	public abstract void getExtraStatusPanel(HTMLNode node);
 
 	public abstract void destroySession();
 
@@ -50,9 +54,13 @@ public abstract class AbstractSiteToolSession {
 		return sessionID;
 	}
 
-	private void setError(Throwable t) {
+	protected void setError(Throwable t) {
 		sessionStatus = SessionStatus.ERROR;
-		lastError =t;
+		lastError = t;
+	}
+	
+	public Throwable getLastError() {
+		return lastError;
 	}
 
 	public final void startSession(Executor executor) {
@@ -64,6 +72,7 @@ public abstract class AbstractSiteToolSession {
 				sessionStatus = SessionStatus.RUNNING;
 				try {
 					execute();
+					sessionStatus = SessionStatus.DONE;
 				} catch (Exception e) {
 					Logger.error(this, "debug", e);
 					setError(e);
@@ -102,6 +111,14 @@ public abstract class AbstractSiteToolSession {
 
 	public boolean checkRemove() {
 		if ((sessionStatus == SessionStatus.DONE) || (sessionStatus == SessionStatus.ERROR) || (sessionStatus == SessionStatus.IDLE)) return true;
+		return false;
+	}
+
+	public void sendResult(ToadletContext ctx) throws ToadletContextClosedException, IOException {
+		throw new UnsupportedOperationException();
+	}
+
+	public boolean haveResult() {
 		return false;
 	}
 }
