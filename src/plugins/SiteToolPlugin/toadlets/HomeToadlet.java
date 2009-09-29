@@ -12,12 +12,14 @@ import plugins.SiteToolPlugin.SessionManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.exception.DuplicateSessionIDException;
 import plugins.SiteToolPlugin.sessions.SiteDownloadSession;
+import plugins.SiteToolPlugin.sessions.USKHealSession;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.keys.FreenetURI;
+import freenet.keys.InsertableUSK;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 
@@ -63,7 +65,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		}
 
 		List<String> errors = new LinkedList<String>();
-		FreenetURI furi = null;
+		
 		String key = request.getPartAsString(PARAM_URI, 1024).trim();
 
 		if (key.length() == 0) {
@@ -74,6 +76,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 
 		if (request.isPartSet(CMD_SITEDOWNLOAD)) {
 			String archiveType = request.getPartAsString(PARAM_TYPE, 32);
+			FreenetURI furi = null;
 
 			try {
 				furi = KeyExplorerUtils.sanitizeURI(errors, key);
@@ -112,6 +115,61 @@ public class HomeToadlet extends WebInterfaceToadlet {
 				sessionMgr.startSession(sessionid);
 			} catch (DuplicateSessionIDException e) {
 				errors.add("Duplicate Session: "+sessionid);
+			}
+
+			if (!errors.isEmpty()) {
+				makePage(ctx, errors, CMD_SITEDOWNLOAD, (furi == null)?null:furi.toString(false, false), archiveType);
+				return;
+			}
+			//success, send to Joblist
+			writeTemporaryRedirect(ctx, "success", SiteToolPlugin.PLUGIN_URI + "/Sessions");
+			return;
+		}
+
+		if (request.isPartSet(CMD_USKFASTHEAL) || request.isPartSet(CMD_USKFULLHEAL)) {
+			boolean fastHeal = request.isPartSet(CMD_USKFASTHEAL);
+			FreenetURI furi = null;
+			try {
+				furi = new FreenetURI(key);
+				if (!furi.isUSK() && !furi.isSSKForUSK()) {
+					errors.add("URI does not point to versioned content");
+				}
+				if (furi.isSSK()) {
+					furi = furi.uskForSSK();
+				}
+				if (furi.getExtra()[1] == 0)
+					errors.add("Not an insert URI");
+			} catch (MalformedURLException e) {
+				errors.add(e.getLocalizedMessage());
+			}
+
+			if (!errors.isEmpty()) {
+				String cmd;
+				if (fastHeal)
+					cmd = CMD_USKFASTHEAL;
+				else
+					cmd = CMD_USKFULLHEAL;
+				makePage(ctx, errors, cmd, (furi == null)?null:furi.toString(false, false), null);
+				return;
+			}
+
+			String sessionid = furi.toString(false, false);
+			USKHealSession session = new USKHealSession(sessionid, furi, pluginContext);
+			try {
+				sessionMgr.addSession(session);
+				sessionMgr.startSession(sessionid);
+			} catch (DuplicateSessionIDException e) {
+				errors.add("Duplicate Session: "+sessionid);
+			}
+
+			if (!errors.isEmpty()) {
+				String cmd;
+				if (fastHeal)
+					cmd = CMD_USKFASTHEAL;
+				else
+					cmd = CMD_USKFULLHEAL;
+				makePage(ctx, errors, cmd, (furi == null)?null:furi.toString(false, false), null);
+				return;
 			}
 
 			//success, send to Joblist
@@ -217,7 +275,10 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		box21Form.addChild("#", "Ensure you have given the latest known edition in the URI, the auto updater may not work until it is healed. ;)");
 		box21Form.addChild("%", "<BR />");
 		box21Form.addChild("#", "USK to heal: \u00a0 ");
-		box21Form.addChild("input", new String[] { "type", "name", "size" }, new String[] { "text", PARAM_URI, "70" });
+		if ((isCommand(what, CMD_USKFASTHEAL) || isCommand(what, CMD_USKFULLHEAL)) && uri != null)
+			box21Form.addChild("input", new String[] { "type", "name", "size", "value" }, new String[] { "text", PARAM_URI, "70", uri });
+		else
+			box21Form.addChild("input", new String[] { "type", "name", "size" }, new String[] { "text", PARAM_URI, "70" });
 		box21Form.addChild("#", "\u00a0");
 		box21Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_USKFULLHEAL, "Full Heal" });
 		box21Form.addChild("#", "\u00a0");
