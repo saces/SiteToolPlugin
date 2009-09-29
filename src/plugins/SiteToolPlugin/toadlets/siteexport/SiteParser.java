@@ -2,6 +2,7 @@ package plugins.SiteToolPlugin.toadlets.siteexport;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map.Entry;
 
 
 import com.db4o.ObjectContainer;
@@ -42,7 +43,7 @@ public class SiteParser implements ClientGetCallback {
 		}
 	}
 
-	public class Snooper implements SnoopMetadata {
+	public static class Snooper implements SnoopMetadata {
 		private Metadata _meta;
 		//private boolean metaSeen = false;
 
@@ -116,8 +117,9 @@ public class SiteParser implements ClientGetCallback {
 	}
 
 	private void parseMetadata(HashMap<String, Metadata> docs, String prefix, FreenetURI uri) throws IOException {
-		for (String name : docs.keySet()) {
-			Metadata md = docs.get(name);
+		for (Entry<String, Metadata> entry : docs.entrySet()) {
+			String name = entry.getKey();
+			Metadata md = entry.getValue();
 			if (md.isSimpleManifest()) {
 				parseMetadata(md.getDocuments(), prefix + name + '/', uri.pushMetaString(name));
 				continue;

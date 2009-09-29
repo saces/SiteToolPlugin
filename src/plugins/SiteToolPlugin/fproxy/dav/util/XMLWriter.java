@@ -260,7 +260,7 @@ public class XMLWriter {
 	 */
 	protected class Indent {
 		/** Base indent */
-		protected String mIndent = new String();
+		protected String mIndent = "";
 
 		/**
 		 * Add a level of indentation

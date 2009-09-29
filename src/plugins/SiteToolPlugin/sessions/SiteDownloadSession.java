@@ -5,6 +5,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.zip.GZIPOutputStream;
 
 import SevenZip.Compression.LZMA.Encoder;
@@ -132,10 +133,10 @@ public class SiteDownloadSession extends AbstractSiteToolSession {
 			node.addChild("#", "Items failed: " + _parser.getItemsError());
 			node.addChild("br");
 			HashMap<String, String> stats = _parser.getProgressStats();
-			for (String name : stats.keySet()) {
-				node.addChild("#", "Name: " + name);
+			for (Entry<String, String> entry : stats.entrySet()) {
+				node.addChild("#", "Name: " + entry.getKey());
 				node.addChild("br");
-				node.addChild("#", "Stat: " + stats.get(name));
+				node.addChild("#", "Stat: " + entry.getValue());
 				node.addChild("br");
 			}
 		} else {

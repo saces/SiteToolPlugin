@@ -173,8 +173,8 @@ public class DoProppatch extends AbstractMethod {
                         .writeElement("DAV::multistatus", TAG.OPENING);
 
                 xmlWriter.writeElement("DAV::response", TAG.OPENING);
-                String status = new String("HTTP/1.1 " + WebDAVStatus.SC_OK
-                        + " " + WebDAVStatus.getStatusText(WebDAVStatus.SC_OK));
+                String status = "HTTP/1.1 " + WebDAVStatus.SC_OK
+                        + " " + WebDAVStatus.getStatusText(WebDAVStatus.SC_OK);
 
                 // Generating href element
                 xmlWriter.writeElement("DAV::href", TAG.OPENING);

@@ -244,7 +244,7 @@ public class WebDAVStatus {
      *  (e.g., "OK").
      */
     public static String getStatusText(int nHttpStatusCode) {
-        Integer intKey = new Integer(nHttpStatusCode);
+        Integer intKey = Integer.valueOf(nHttpStatusCode);
 
         if (!_mapStatusCodes.containsKey(intKey)) {
             return "";
@@ -265,7 +265,7 @@ public class WebDAVStatus {
      *      [IN] HTTP status text
      */
     private static void addStatusCodeMap(int nKey, String strVal) {
-        _mapStatusCodes.put(new Integer(nKey), strVal);
+        _mapStatusCodes.put(Integer.valueOf(nKey), strVal);
     }
 
 };

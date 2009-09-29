@@ -112,8 +112,7 @@ public class DoLock extends AbstractMethod {
             if (_userAgent != null && _userAgent.indexOf("Darwin") != -1) {
                 _macLockRequest = true;
 
-                String timeString = new Long(System.currentTimeMillis())
-                        .toString();
+                String timeString = Long.toString(System.currentTimeMillis());
                 _lockOwner = _userAgent.concat(timeString);
             }
 

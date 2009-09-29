@@ -267,8 +267,8 @@ public class DoPropfind extends AbstractMethod {
 		// ResourceInfo resourceInfo = new ResourceInfo(path, resources);
 
 		xmlWriter.writeElement("DAV::response", TAG.OPENING);
-		String status = new String("HTTP/1.1 " + WebDAVStatus.SC_OK + " "
-				+ WebDAVStatus.getStatusText(WebDAVStatus.SC_OK));
+		String status = "HTTP/1.1 " + WebDAVStatus.SC_OK + " "
+				+ WebDAVStatus.getStatusText(WebDAVStatus.SC_OK);
 
 		// Generating href element
 		xmlWriter.writeElement("DAV::href", TAG.OPENING);
@@ -447,9 +447,9 @@ public class DoPropfind extends AbstractMethod {
 
 			if (propertiesNotFoundList.hasMoreElements()) {
 
-				status = new String("HTTP/1.1 " + WebDAVStatus.SC_NOT_FOUND
+				status = "HTTP/1.1 " + WebDAVStatus.SC_NOT_FOUND
 						+ " "
-						+ WebDAVStatus.getStatusText(WebDAVStatus.SC_NOT_FOUND));
+						+ WebDAVStatus.getStatusText(WebDAVStatus.SC_NOT_FOUND);
 
 				xmlWriter.writeElement("DAV::propstat", TAG.OPENING);
 				xmlWriter.writeElement("DAV::prop", TAG.OPENING);
@@ -579,7 +579,7 @@ public class DoPropfind extends AbstractMethod {
 			}
 
 			int timeout = (int) (lo.getTimeoutMillis() / 1000);
-			String timeoutStr = new Integer(timeout).toString();
+			String timeoutStr = Integer.toString(timeout);
 			xmlWriter.writeElement("DAV::timeout", TAG.OPENING);
 			xmlWriter.writeText("Second-" + timeoutStr);
 			xmlWriter.writeElement("DAV::timeout", TAG.CLOSING);
