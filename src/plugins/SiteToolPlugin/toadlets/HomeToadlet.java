@@ -1,7 +1,6 @@
 package plugins.SiteToolPlugin.toadlets;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.LinkedList;
@@ -13,17 +12,13 @@ import plugins.SiteToolPlugin.SessionManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.exception.DuplicateSessionIDException;
 import plugins.SiteToolPlugin.sessions.SiteDownloadSession;
-import plugins.SiteToolPlugin.toadlets.siteexport.SiteCollector;
-import plugins.SiteToolPlugin.toadlets.siteexport.SiteParser;
 import plugins.fproxy.lib.PluginContext;
 import plugins.fproxy.lib.WebInterfaceToadlet;
-import freenet.client.FetchException;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.keys.FreenetURI;
 import freenet.support.HTMLNode;
-import freenet.support.Logger;
 import freenet.support.api.HTTPRequest;
 
 public class HomeToadlet extends WebInterfaceToadlet {
@@ -121,53 +116,6 @@ public class HomeToadlet extends WebInterfaceToadlet {
 
 			//success, send to Joblist
 			writeTemporaryRedirect(ctx, "success", SiteToolPlugin.PLUGIN_URI + "/Sessions");
-
-			//furi = furi.addMetaStrings(new String[] { "fake" } );
-//			Bucket out = ctx.getBucketFactory().makeBucket(-1);
-//			OutputStream os = new BufferedOutputStream(out.getOutputStream());
-//			if (DL_TYPE_TARGZ.equals(archiveType)) {
-//				os = new GZIPOutputStream(os);
-//			}
-//
-//			try {
-//				makeArchive(os, furi, DL_TYPE_ZIP.equals(archiveType), errors);
-//			} finally {
-//				Closer.close(os);
-//				os = null;
-//			}
-//			
-//			if (!errors.isEmpty()) {
-//				makePage(ctx, errors);
-//				return;
-//			}
-//			
-//			if (DL_TYPE_TAR7Z.equals(archiveType)) {
-//				Bucket output = ctx.getBucketFactory().makeBucket(-1);
-//				BufferedInputStream cis = null;
-//				BufferedOutputStream cos = null;
-//				try {
-//					cis = new BufferedInputStream(out.getInputStream());
-//					cos = new BufferedOutputStream(output.getOutputStream());
-//					Encoder encoder = new Encoder();
-//					encoder.SetEndMarkerMode( true );
-//					encoder.SetDictionarySize( 1 << 20 );
-//					// enc.WriteCoderProperties( out );
-//					// 5d 00 00 10 00
-//					encoder.Code( cis, cos, -1, -1, null );
-//					cis.close();
-//					cos.close();
-//				} finally {
-//					Closer.close(cis);
-//					Closer.close(cos);
-//				}
-//				out.free();
-//				out = output;
-//			}
-//
-//			MultiValueTable<String, String> head = new MultiValueTable<String, String>();
-//			head.put("Content-Disposition", "attachment; filename=\"" + "sitearchive."+ ext + '"');
-//			ctx.sendReplyHeaders(200, "Found", head, mime, out.size());
-//			ctx.writeData(out);
 			return;
 		}
 
@@ -179,24 +127,6 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		request.getMethod();
 		errors.add("Whatever you have called, it is not implemented");
 		makePage(ctx, errors);
-	}
-
-	private void makeArchive(OutputStream out, FreenetURI furi, boolean zip, List<String> errors) {
-		
-		SiteCollector collector = new SiteCollector(out, zip, pluginContext.clientCore.tempBucketFactory);
-		SiteParser parser = null; //new SiteParser(collector, furi, true, true, pluginContext.pluginRespirator);
-		try {
-			parser.parseSite();
-		} catch (FetchException e) {
-			Logger.error(this, "500", e);
-			errors.add(e.getLocalizedMessage());
-			return;
-		} catch (IOException e) {
-			Logger.error(this, "500", e);
-			errors.add(e.getLocalizedMessage());
-		} finally {
-			
-		}
 	}
 
 	private void makePage(ToadletContext ctx) throws ToadletContextClosedException, IOException {
