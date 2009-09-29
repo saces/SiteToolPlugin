@@ -11,7 +11,6 @@ import java.util.zip.GZIPOutputStream;
 import SevenZip.Compression.LZMA.Encoder;
 
 import plugins.SiteToolPlugin.Constants;
-import plugins.SiteToolPlugin.toadlets.SessionsToadlet;
 import plugins.SiteToolPlugin.toadlets.siteexport.SiteCollector;
 import plugins.SiteToolPlugin.toadlets.siteexport.SiteParser;
 
@@ -140,7 +139,7 @@ public class SiteDownloadSession extends AbstractSiteToolSession {
 				node.addChild("br");
 			}
 		} else {
-			node.addChild("#", "<Empty>");
+			node.addChild("#", currentProgress);
 		}
 	}
 
