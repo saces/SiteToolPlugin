@@ -86,7 +86,7 @@ public class SiteToolSession {
 		}
 
 		if ((!overwrite) && (parent.containsKey(name))) {
-			FCPHandler.sendError(replysender, 200, name, "Duplicate item");
+			//FCPHandler.sendError(replysender, 200, name, "Duplicate item");
 			return;
 		}
 

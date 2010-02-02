@@ -22,8 +22,6 @@ import plugins.SiteToolPlugin.fproxy.dav.methods.DoPropfind;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoProppatch;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoPut;
 import plugins.SiteToolPlugin.fproxy.dav.methods.DoUnlock;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.client.DefaultMIMETypes;
 import freenet.clients.http.RedirectException;
 import freenet.clients.http.Toadlet;
@@ -32,6 +30,8 @@ import freenet.clients.http.ToadletContextClosedException;
 import freenet.clients.http.annotation.AllowData;
 import freenet.support.Logger;
 import freenet.support.api.HTTPRequest;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class DAVToadlet extends WebInterfaceToadlet {
 

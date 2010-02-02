@@ -56,9 +56,9 @@ public class SessionManager {
 		_sessions.put(key, session);
 	}
 
-	public void startSession(String sessionID) {
+	public void startSession(PluginReplySender replysender, String sessionID) {
 		AbstractSiteToolSession session = _sessions.get(sessionID);
-		session.startSession(_executor);
+		session.startSession(replysender, _executor);
 	}
 
 	public void removeSession(String sessionID) {
@@ -66,5 +66,10 @@ public class SessionManager {
 		if (!session.checkRemove())
 			throw new IllegalStateException();
 		_sessions.remove(sessionID);
+	}
+	
+	public void cancelSession(String sessionID) {
+		AbstractSiteToolSession session = _sessions.get(sessionID);
+		session.cancelSession(_executor);
 	}
 }

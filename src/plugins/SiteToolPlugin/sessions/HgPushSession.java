@@ -26,7 +26,7 @@ public class HgPushSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(PluginReplySender replysender) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -37,7 +37,7 @@ public class HgPushSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void handleFCP(PluginReplySender replysender, SimpleFieldSet params,
+	public void handleFCP(PluginReplySender replysender, String command, SimpleFieldSet params,
 			Bucket data, int accesstype) throws PluginNotFoundException {
 		// TODO Auto-generated method stub
 		

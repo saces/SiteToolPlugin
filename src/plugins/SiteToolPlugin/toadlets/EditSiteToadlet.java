@@ -4,14 +4,14 @@ import java.io.IOException;
 import java.net.URI;
 
 import plugins.SiteToolPlugin.SiteToolPlugin;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.Toadlet;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class EditSiteToadlet extends WebInterfaceToadlet {
 	private final SitesToadlet sitesToadlet;

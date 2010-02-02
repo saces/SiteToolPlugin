@@ -6,12 +6,9 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
-import plugins.KeyExplorer.toadlets.UIUtils;
 import plugins.SiteToolPlugin.SiteManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.exception.DuplicateSiteException;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.InfoboxNode;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.ToadletContext;
@@ -21,6 +18,8 @@ import freenet.keys.InsertableClientSSK;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
 import freenet.support.io.BucketTools;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class SitesToadlet extends WebInterfaceToadlet {
 
@@ -171,7 +170,7 @@ public class SitesToadlet extends WebInterfaceToadlet {
 		HTMLNode contentNode = pageNode.content;
 
 		if (errors.size() > 0) {
-			contentNode.addChild(UIUtils.createErrorBox(pluginContext, errors));
+			contentNode.addChild(createErrorBox(errors));
 			errors.clear();
 		}
 		contentNode.addChild(createNewSiteBox(pluginContext, sitename, sitepath, inserturi, requesturi));

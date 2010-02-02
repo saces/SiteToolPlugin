@@ -6,22 +6,21 @@ import java.net.URI;
 import java.util.LinkedList;
 import java.util.List;
 
-import plugins.KeyExplorer.KeyExplorerUtils;
 import plugins.SiteToolPlugin.Constants;
 import plugins.SiteToolPlugin.SessionManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.exception.DuplicateSessionIDException;
 import plugins.SiteToolPlugin.sessions.SiteDownloadSession;
 import plugins.SiteToolPlugin.sessions.USKHealSession;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.keys.FreenetURI;
-import freenet.keys.InsertableUSK;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.URISanitizer;
+import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class HomeToadlet extends WebInterfaceToadlet {
 
@@ -79,7 +78,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			FreenetURI furi = null;
 
 			try {
-				furi = KeyExplorerUtils.sanitizeURI(errors, key);
+				furi = URISanitizer.sanitizeURI(errors, key, false, URISanitizer.Options.NOMETASTRINGS, URISanitizer.Options.SSKFORUSK);
 			} catch (MalformedURLException e) {
 				errors.add(e.getLocalizedMessage());
 			}
@@ -112,7 +111,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			SiteDownloadSession session = new SiteDownloadSession(sessionid, furi, pluginContext.clientCore.tempBucketFactory, archiveType, pluginContext.hlsc, pluginContext.clientCore.clientContext);
 			try {
 				sessionMgr.addSession(session);
-				sessionMgr.startSession(sessionid);
+				sessionMgr.startSession(null, sessionid);
 			} catch (DuplicateSessionIDException e) {
 				errors.add("Duplicate Session: "+sessionid);
 			}
@@ -157,7 +156,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			USKHealSession session = new USKHealSession(sessionid, furi, pluginContext);
 			try {
 				sessionMgr.addSession(session);
-				sessionMgr.startSession(sessionid);
+				sessionMgr.startSession(null, sessionid);
 			} catch (DuplicateSessionIDException e) {
 				errors.add("Duplicate Session: "+sessionid);
 			}
@@ -204,7 +203,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			HTMLNode errorBox = pluginContext.pageMaker.getInfobox("infobox-alert", "Error", contentNode);
 			for (String error : errors) {
 				errorBox.addChild("#", error);
-				errorBox.addChild("%", "<BR />");
+				errorBox.addChild("br");
 			}
 		}
 
@@ -238,7 +237,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 			box11Form.addChild("input", new String[] { "type", "name", "value", "checked" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_ZIP, "checked" }, "zip");
 		else
 			box11Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "radio", PARAM_TYPE, Constants.DL_TYPE_ZIP }, "zip");
-		box11Form.addChild("%", "<BR />");
+		box11Form.addChild("br");
 		box11Form.addChild("#", "Site URI: \u00a0 ");
 		if (isCommand(what, CMD_SITEDOWNLOAD) && uri != null)
 			box11Form.addChild("input", new String[] { "type", "name", "size", "value" }, new String[] { "text", PARAM_URI, "70", uri });
@@ -273,7 +272,7 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		HTMLNode box21 = pluginContext.pageMaker.getInfobox("infobox-information", "Heal an USK update chain", box2);
 		HTMLNode box21Form = pluginContext.pluginRespirator.addFormChild(box21, path(), "uriForm");
 		box21Form.addChild("#", "Ensure you have given the latest known edition in the URI, the auto updater may not work until it is healed. ;)");
-		box21Form.addChild("%", "<BR />");
+		box21Form.addChild("br");
 		box21Form.addChild("#", "USK to heal: \u00a0 ");
 		if ((isCommand(what, CMD_USKFASTHEAL) || isCommand(what, CMD_USKFULLHEAL)) && uri != null)
 			box21Form.addChild("input", new String[] { "type", "name", "size", "value" }, new String[] { "text", PARAM_URI, "70", uri });

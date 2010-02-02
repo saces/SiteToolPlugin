@@ -13,9 +13,9 @@ import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
 
 public abstract class AbstractSiteToolSession {
-	
+
 	public enum SessionStatus { IDLE, WAITING, RUNNING, STOPPING, DONE, ERROR };
-	
+
 	private static volatile boolean logMINOR;
 	private static volatile boolean logDEBUG;
 
@@ -25,7 +25,7 @@ public abstract class AbstractSiteToolSession {
 
 	private final Object lock = new Object();
 
-	private final String sessionID;
+	protected final String sessionID;
 	private SessionStatus sessionStatus;
 	private Throwable lastError;
 
@@ -36,7 +36,7 @@ public abstract class AbstractSiteToolSession {
 
 	public abstract boolean canRetry();
 
-	protected abstract void execute();
+	protected abstract void execute(PluginReplySender replysender);
 
 	public abstract void cancel();
 
@@ -44,7 +44,7 @@ public abstract class AbstractSiteToolSession {
 
 	public abstract void destroySession();
 
-	public abstract void handleFCP(PluginReplySender replysender, SimpleFieldSet params, Bucket data, int accesstype) throws PluginNotFoundException;
+	public abstract void handleFCP(PluginReplySender replysender, String command, SimpleFieldSet params, Bucket data, int accesstype) throws PluginNotFoundException;
 
 	public SessionStatus getStatus() {
 		return sessionStatus ;
@@ -58,12 +58,12 @@ public abstract class AbstractSiteToolSession {
 		sessionStatus = SessionStatus.ERROR;
 		lastError = t;
 	}
-	
+
 	public Throwable getLastError() {
 		return lastError;
 	}
 
-	public final void startSession(Executor executor) {
+	public final void startSession(final PluginReplySender replysender, Executor executor) {
 		if (!checkStart())
 			throw new IllegalStateException();
 		sessionStatus = SessionStatus.WAITING;
@@ -71,7 +71,7 @@ public abstract class AbstractSiteToolSession {
 			public void run() {
 				sessionStatus = SessionStatus.RUNNING;
 				try {
-					execute();
+					execute(replysender);
 					sessionStatus = SessionStatus.DONE;
 				} catch (Exception e) {
 					Logger.error(this, "debug", e);

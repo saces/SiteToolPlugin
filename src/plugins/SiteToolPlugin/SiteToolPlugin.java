@@ -2,17 +2,14 @@ package plugins.SiteToolPlugin;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 
-import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.DAVToadlet;
+import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.LocalFileSystemStore;
 import plugins.SiteToolPlugin.fproxy.dav.sampleimpl.SimpleResourceLocks;
 import plugins.SiteToolPlugin.toadlets.EditSiteToadlet;
 import plugins.SiteToolPlugin.toadlets.HomeToadlet;
 import plugins.SiteToolPlugin.toadlets.SessionsToadlet;
 import plugins.SiteToolPlugin.toadlets.SitesToadlet;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterface;
 import freenet.l10n.BaseL10n.LANGUAGE;
 import freenet.pluginmanager.FredPlugin;
 import freenet.pluginmanager.FredPluginFCP;
@@ -26,6 +23,8 @@ import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
 import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.WebInterface;
 /**
  * @author saces
  * 
@@ -45,8 +44,6 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 	}
 
 	PluginRespirator pr;
-
-	private final HashMap<String, SiteToolSession> sessions = new HashMap<String, SiteToolSession>();
 
 	private PluginContext pluginContext;
 	private WebInterface webInterface;
@@ -127,12 +124,7 @@ public class SiteToolPlugin implements FredPlugin, FredPluginFCP,
 
 	public void handle(PluginReplySender replysender, SimpleFieldSet params, Bucket data, int accesstype) {
 		try {
-			try {
-				fcpHandler.handle(replysender, params, data, accesstype);
-			} catch (UnsupportedOperationException uoe) {
-				Logger.error(this, "TODO ERROR? "+uoe, uoe);
-				FCPHandler.sendError(replysender, STFCPException.INTERNAL, "<unknown>", uoe.toString());
-			}
+			fcpHandler.handle(replysender, params, data, accesstype);
 		} catch (PluginNotFoundException pnfe) {
 			Logger.error(this, "Connection to request sender Lost.", pnfe);
 		}

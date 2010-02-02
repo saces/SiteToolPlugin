@@ -4,7 +4,6 @@
 <project name="Freenet" default="dist" basedir=".">
 	<property name="freenet-cvs-snapshot.location" location="../fred/lib/freenet-cvs-snapshot.jar"/>
 	<property name="freenet-ext.location" location="../fred/lib/freenet-ext.jar"/>
-	<property name="keyexplorer.location" location="../KeyExplorer/dist/KeyExplorer.jar" />
 	<property name="svn.revision" value="@custom@"/>
 	<property name="source-version" value="1.5"/>
 	<property name="target-version" value="1.5"/>
@@ -71,7 +70,6 @@
 			<classpath>
 				<pathelement location="${freenet-ext.location}"/>
 				<pathelement location="${freenet-cvs-snapshot.location}"/>
-				<pathelement location="${keyexplorer.location}"/>
 			</classpath>
 			<include name="**/*.java"/>
 			<exclude name="**/*Test.java"/>
@@ -127,7 +125,6 @@
 				<include name="*.txt"/>
 			</fileset>
 			<fileset dir="${build}/"/>
-			<zipfileset src="${keyexplorer.location}"/>
 		</jar>
 		<zip destfile="${dist}/SiteToolPlugin-src.zip" filesonly="true" compress="true">
 			<zipfileset dir="."

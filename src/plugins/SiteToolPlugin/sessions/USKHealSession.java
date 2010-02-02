@@ -2,8 +2,6 @@ package plugins.SiteToolPlugin.sessions;
 
 import java.net.MalformedURLException;
 
-import plugins.fproxy.lib.PluginContext;
-
 import freenet.client.InsertException;
 import freenet.keys.FreenetURI;
 import freenet.keys.InsertableUSK;
@@ -13,6 +11,7 @@ import freenet.support.HTMLNode;
 import freenet.support.Logger;
 import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
+import freenet.support.plugins.helpers1.PluginContext;
 
 public class USKHealSession extends AbstractSiteToolSession {
 
@@ -42,7 +41,7 @@ public class USKHealSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(PluginReplySender replysender) {
 		status.append("starting\n");
 		InsertableUSK iUSK = null;
 		FreenetURI targetURI;
@@ -94,7 +93,7 @@ public class USKHealSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void handleFCP(PluginReplySender replysender, SimpleFieldSet params,
+	public void handleFCP(PluginReplySender replysender, String command, SimpleFieldSet params,
 			Bucket data, int accesstype) throws PluginNotFoundException {
 		// TODO Auto-generated method stub
 		

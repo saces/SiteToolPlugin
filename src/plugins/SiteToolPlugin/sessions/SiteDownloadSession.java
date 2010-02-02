@@ -63,7 +63,7 @@ public class SiteDownloadSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void execute() {
+	public void execute(PluginReplySender replysender) {
 		Logger.error(this, "executione begin");
 		currentProgress = "begin";
 		try {
@@ -144,7 +144,7 @@ public class SiteDownloadSession extends AbstractSiteToolSession {
 	}
 
 	@Override
-	public void handleFCP(PluginReplySender replysender, SimpleFieldSet params,
+	public void handleFCP(PluginReplySender replysender, String command, SimpleFieldSet params,
 			Bucket data, int accesstype) throws PluginNotFoundException {
 		// TODO Auto-generated method stub
 		

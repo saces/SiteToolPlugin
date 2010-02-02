@@ -8,14 +8,14 @@ import plugins.SiteToolPlugin.SessionManager;
 import plugins.SiteToolPlugin.SiteToolPlugin;
 import plugins.SiteToolPlugin.sessions.AbstractSiteToolSession;
 import plugins.SiteToolPlugin.sessions.AbstractSiteToolSession.SessionStatus;
-import plugins.fproxy.lib.PluginContext;
-import plugins.fproxy.lib.WebInterfaceToadlet;
 import freenet.clients.http.InfoboxNode;
 import freenet.clients.http.PageNode;
 import freenet.clients.http.ToadletContext;
 import freenet.clients.http.ToadletContextClosedException;
 import freenet.support.HTMLNode;
 import freenet.support.api.HTTPRequest;
+import freenet.support.plugins.helpers1.PluginContext;
+import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class SessionsToadlet extends WebInterfaceToadlet {
 
@@ -61,7 +61,7 @@ public class SessionsToadlet extends WebInterfaceToadlet {
 		String sessionid = request.getPartAsString(PARAM_SESSIONID, 1024);
 		AbstractSiteToolSession session = sessionMgr.getSession(sessionid);
 		if (request.isPartSet(CMD_START)) {
-			session.startSession(pluginContext.clientCore.getExecutor());
+			session.startSession(null, pluginContext.clientCore.getExecutor());
 		} else if (request.isPartSet(CMD_CANCEL)) {
 			session.cancelSession(pluginContext.clientCore.getExecutor());
 		} else if (request.isPartSet(CMD_REMOVE)) {

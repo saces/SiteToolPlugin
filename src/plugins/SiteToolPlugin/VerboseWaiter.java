@@ -12,17 +12,19 @@ import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
 import freenet.support.Logger;
 
-
-class VerboseWaiter extends PutWaiter implements ClientEventListener {
+public class VerboseWaiter extends PutWaiter implements ClientEventListener {
 	
 	private final PluginReplySender _replysender;
 	private final String _identifier;
-	private final BaseClientPutter _putter;
+	private BaseClientPutter _putter;
 
-	VerboseWaiter(PluginReplySender replysender, String identifier, BaseClientPutter putter) {
+	public VerboseWaiter(PluginReplySender replysender, String identifier) {
 		super();
 		_replysender = replysender;
 		_identifier = identifier;
+	}
+
+	public void setPutter(BaseClientPutter putter) {
 		_putter = putter;
 	}
 
