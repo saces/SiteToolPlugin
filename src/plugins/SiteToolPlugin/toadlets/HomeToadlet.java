@@ -24,6 +24,7 @@ import freenet.support.plugins.helpers1.WebInterfaceToadlet;
 
 public class HomeToadlet extends WebInterfaceToadlet {
 
+	private final static String CMD_MAKEKEYPAIR = "makekeypair";
 	private final static String CMD_SITEDOWNLOAD = "sitedownload";
 	private final static String CMD_SITEEXPORT = "siteexport";
 	private final static String CMD_FILEEXPORT = "fileexport";
@@ -64,7 +65,16 @@ public class HomeToadlet extends WebInterfaceToadlet {
 		}
 
 		List<String> errors = new LinkedList<String>();
-		
+
+		if (request.isPartSet(CMD_MAKEKEYPAIR)) {
+			FreenetURI[] kp = getClientImpl().generateKeyPair("docName");
+			errors.add("Generated a keypair for you.");
+			errors.add("Insert Key: "+kp[0].setDocName(null).toString(false, false));
+			errors.add("Read Key: "+kp[1].setDocName(null).toString(false, false));
+			makePage(ctx, errors);
+			return;
+		}
+
 		String key = request.getPartAsString(PARAM_URI, 1024).trim();
 
 		if (key.length() == 0) {
@@ -206,6 +216,10 @@ public class HomeToadlet extends WebInterfaceToadlet {
 				errorBox.addChild("br");
 			}
 		}
+
+		HTMLNode box0 = pluginContext.pageMaker.getInfobox("infobox-information", "Misc utils", contentNode);
+		HTMLNode box0Form = pluginContext.pluginRespirator.addFormChild(box0, path(), "generateForm");
+		box0Form.addChild("input", new String[] { "type", "name", "value" }, new String[] { "submit", CMD_MAKEKEYPAIR, "Generate Keypair" });
 
 		HTMLNode box1 = pluginContext.pageMaker.getInfobox("infobox-information", "Uploads / Downloads", contentNode);
 
