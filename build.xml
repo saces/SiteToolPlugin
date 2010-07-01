@@ -2,8 +2,8 @@
 <!-- ant build file for Freenet -->
 
 <project name="Freenet" default="dist" basedir=".">
-	<property name="freenet-cvs-snapshot.location" location="../fred/lib/freenet-cvs-snapshot.jar"/>
-	<property name="freenet-ext.location" location="../fred/lib/freenet-ext.jar"/>
+	<property name="freenet-cvs-snapshot.location" location="../fred/lib/FreenetService.jar"/>
+	<property name="freenet-ext.location" location="../foe/orbit/lib/freenet-ext.jar"/>
 	<property name="svn.revision" value="@custom@"/>
 	<property name="source-version" value="1.5"/>
 	<property name="target-version" value="1.5"/>
@@ -115,7 +115,7 @@
 	</target>
 
 	<!-- ================================================== -->
-	<target name="dist" depends="clean,compile,junit"
+	<target name="dist" depends="compile,junit"
 		description="generate the distribution" >
 		<jar jarfile="${dist}/SiteToolPlugin.jar" duplicate="fail" filesetmanifest="skip">
 			<manifest>
