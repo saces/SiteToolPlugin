@@ -5,9 +5,9 @@ import java.io.OutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
-import org.apache.tools.tar.TarEntry;
-import org.apache.tools.tar.TarOutputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
 
+import freenet.osgi.compress.PaxFormatter;
 import freenet.support.api.Bucket;
 import freenet.support.api.BucketFactory;
 import freenet.support.io.BucketTools;
@@ -22,7 +22,7 @@ public class SiteCollector implements ISiteParserCallback {
 
 	private interface Collector {
 		void addItem(String name, Bucket data) throws IOException;
-		void finish();
+		void finish() throws IOException;
 	}
 
 	private class ZipCollector implements Collector {
@@ -48,24 +48,23 @@ public class SiteCollector implements ISiteParserCallback {
 
 	private class TarCollector implements Collector {
 
-		TarOutputStream __tos;
+		final TarArchiveOutputStream __tos;
+		final PaxFormatter __pf;
 
 		TarCollector() {
-			__tos = new TarOutputStream(_os);
+			__tos = new TarArchiveOutputStream(_os);
+			__pf = new PaxFormatter(__tos);
 		}
 
-		public void finish() {
+		public void finish() throws IOException {
+			__tos.finish();
+			__tos.flush();
+			__tos.close();
 			Closer.close(__tos);
 		}
 
 		public void addItem(String name, Bucket data) throws IOException {
-			TarEntry te = new TarEntry(name);
-			te.setModTime(0);
-			long size = data.size();
-			te.setSize(size);
-			__tos.putNextEntry(te);
-			BucketTools.copyTo(data, __tos, size);
-			__tos.closeEntry();
+			__pf.addItem(name, data.getInputStream(), data.size());
 		}
 	}
 

@@ -18,6 +18,8 @@
 	<available file="src/plugins/SiteToolPlugin/Version.java" property="version.present"/>
 	<available file="${junit.location}" property="junit.present"/>
 
+	<property name="compress.jar.location" location="../foe/FreenetCompress/dist/FreenetCompress.jar"/>
+
 	<exec executable="git"
 		failifexecutionfails="false"
 		errorProperty="git.errror"
@@ -70,6 +72,7 @@
 			<classpath>
 				<pathelement location="${freenet-ext.location}"/>
 				<pathelement location="${freenet-cvs-snapshot.location}"/>
+				<pathelement location="${compress.jar.location}"/>
 			</classpath>
 			<include name="**/*.java"/>
 			<exclude name="**/*Test.java"/>
