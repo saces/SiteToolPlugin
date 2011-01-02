@@ -136,11 +136,14 @@ public class SiteEditSession extends AbstractSiteToolSession {
 			}
 			public void removeFrom(ObjectContainer container) {
 			}
+			public boolean realTimeFlag() {
+				return true;
+			}
 			
 		};
 		InsertContext iCtx = pluginContext.hlsc.getInsertContext(true);
 		iCtx.compressorDescriptor = "LZMA";
-		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, rc, false);
+		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, rc, false, false, null, null);
 		if (pw instanceof VerboseWaiter) {
 			iCtx.eventProducer.addEventListener((VerboseWaiter)pw);
 			((VerboseWaiter) pw).setPutter(dmp);
