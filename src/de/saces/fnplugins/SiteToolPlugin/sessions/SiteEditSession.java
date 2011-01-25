@@ -144,7 +144,7 @@ public class SiteEditSession extends AbstractSiteToolSession {
 		};
 		InsertContext iCtx = pluginContext.hlsc.getInsertContext(true);
 		iCtx.compressorDescriptor = "LZMA";
-		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, rc, false, false, null, null);
+		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, rc, false, false, null, pluginContext.clientCore.clientContext);
 		if (pw instanceof VerboseWaiter) {
 			iCtx.eventProducer.addEventListener((VerboseWaiter)pw);
 			((VerboseWaiter) pw).setPutter(dmp);
