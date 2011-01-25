@@ -12,10 +12,10 @@
 	<property name="dist" location="dist/"/>
 	<property name="src" location="src/"/>
 	<property name="junit.location" value="/usr/share/java/junit.jar"/>
-	<property name="version.src" value="plugins/SiteToolPlugin/Version.java" />
-	<property name="version.build" value="plugins/SiteToolPlugin/Version.class" />
+	<property name="version.src" value="de/saces/fnplugins/SiteToolPlugin/Version.java" />
+	<property name="version.build" value="de/saces/fnplugins/SiteToolPlugin/Version.class" />
 
-	<available file="src/plugins/SiteToolPlugin/Version.java" property="version.present"/>
+	<available file="src/de/saces/fnplugins/SiteToolPlugin/Version.java" property="version.present"/>
 	<available file="${junit.location}" property="junit.present"/>
 
 	<exec executable="git"
@@ -119,7 +119,7 @@
 		description="generate the distribution" >
 		<jar jarfile="${dist}/SiteToolPlugin.jar" duplicate="fail" filesetmanifest="skip">
 			<manifest>
-				<attribute name="Plugin-Main-Class" value="plugins.SiteToolPlugin.SiteToolPlugin"/>
+				<attribute name="Plugin-Main-Class" value="de.saces.fnplugins.SiteToolPlugin.SiteToolPlugin"/>
 			</manifest>
 			<fileset dir="src/" casesensitive="no">
 				<include name="*.txt"/>
