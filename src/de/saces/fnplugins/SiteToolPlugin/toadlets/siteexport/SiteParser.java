@@ -26,10 +26,10 @@ import freenet.node.RequestStarter;
 import freenet.support.Logger;
 
 public class SiteParser implements ClientGetCallback {
-	
+
 	public class ProgressMonitor implements ClientEventListener {
-		
-		private String lastProgress = "Starting";
+
+		private String _lastProgress = "Starting";
 
 		public void onRemoveEventProducer(ObjectContainer container) {
 		}
@@ -38,8 +38,12 @@ public class SiteParser implements ClientGetCallback {
 				ClientContext context) {
 			if (ce instanceof SplitfileProgressEvent) {
 				SplitfileProgressEvent spe = (SplitfileProgressEvent) ce;
-				lastProgress = spe.getDescription();
+				_lastProgress = spe.getDescription();
 			}
+		}
+
+		public String getLastProgress() {
+			return _lastProgress;
 		}
 	}
 
@@ -195,9 +199,12 @@ public class SiteParser implements ClientGetCallback {
 	}
 
 	public void cancel(boolean wait) {
-		for (ClientGetter getter:_getter2nameMap.keySet()) {
-			getter.cancel(null, _clientContext);
+		synchronized (this) {
+			for (ClientGetter getter:_getter2nameMap.keySet()) {
+				getter.cancel(null, _clientContext);
+			}
 		}
+		// if (wait) waitForDone();
 	}
 
 	public int getItemsTotal() {
@@ -215,10 +222,10 @@ public class SiteParser implements ClientGetCallback {
 		return itemsLeft;
 	}
 
-	public HashMap<String, String> getProgressStats() {
+	public synchronized HashMap<String, String> getProgressStats() {
 		HashMap<String, String> result = new HashMap<String, String>();
 		for (String name:_statusByName.keySet()) {
-			result.put(name, _statusByName.get(name).lastProgress);
+			result.put(name, _statusByName.get(name).getLastProgress());
 		}
 		return result;
 	}
