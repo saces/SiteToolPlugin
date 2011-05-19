@@ -132,11 +132,13 @@ public class SiteDownloadSession extends AbstractSiteToolSession {
 			node.addChild("br");
 			node.addChild("#", "Items failed: " + _parser.getItemsError());
 			node.addChild("br");
+			node.addChild("br");
 			HashMap<String, String> stats = _parser.getProgressStats();
 			for (Entry<String, String> entry : stats.entrySet()) {
 				node.addChild("#", "Name: " + entry.getKey());
 				node.addChild("br");
 				node.addChild("#", "Stat: " + entry.getValue());
+				node.addChild("br");
 				node.addChild("br");
 			}
 		} else {
