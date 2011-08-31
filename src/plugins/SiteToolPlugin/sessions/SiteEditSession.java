@@ -134,6 +134,9 @@ public class SiteEditSession extends AbstractSiteToolSession {
 			public boolean persistent() {
 				return false;
 			}
+			public boolean realTimeFlag() {
+				return false;
+			}
 			public void removeFrom(ObjectContainer container) {
 			}
 			
