@@ -6,15 +6,13 @@ import java.util.HashMap;
 
 import plugins.SiteToolPlugin.VerboseWaiter;
 
-import com.db4o.ObjectContainer;
-
 import freenet.client.DefaultMIMETypes;
 import freenet.client.InsertContext;
 import freenet.client.InsertException;
 import freenet.client.PutWaiter;
-import freenet.client.async.DatabaseDisabledException;
 import freenet.client.async.DefaultManifestPutter;
-import freenet.client.async.ManifestElement;
+import freenet.client.async.PersistenceDisabledException;
+import freenet.client.async.TooManyFilesInsertException;
 import freenet.keys.FreenetURI;
 import freenet.node.RequestClient;
 import freenet.pluginmanager.PluginNotFoundException;
@@ -22,6 +20,8 @@ import freenet.pluginmanager.PluginReplySender;
 import freenet.support.HTMLNode;
 import freenet.support.SimpleFieldSet;
 import freenet.support.api.Bucket;
+import freenet.support.api.ManifestElement;
+import freenet.support.api.RandomAccessBucket;
 import freenet.support.io.FileBucket;
 import freenet.support.plugins.helpers1.AbstractFCPHandler;
 import freenet.support.plugins.helpers1.PluginContext;
@@ -56,11 +56,29 @@ public class SiteEditSession extends AbstractSiteToolSession {
 
 	@Override
 	public void execute(final PluginReplySender replysender) {
+
+		RequestClient rc = new RequestClient(){
+			public boolean persistent() {
+				return false;
+			}
+
+			public boolean realTimeFlag() {
+				return false;
+			}
+		};
 		// insert data
-		VerboseWaiter vw = new VerboseWaiter(replysender, sessionID);
+		VerboseWaiter vw = new VerboseWaiter(replysender, sessionID, rc);
 		try {
 			fetchURI = insert(vw);
 		} catch (InsertException e) {
+			try {
+				AbstractFCPHandler.sendErrorWithTrace(replysender, sessionID, e);
+			} catch (PluginNotFoundException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			return;
+		} catch (TooManyFilesInsertException e) {
 			try {
 				AbstractFCPHandler.sendErrorWithTrace(replysender, sessionID, e);
 			} catch (PluginNotFoundException e1) {
@@ -97,7 +115,7 @@ public class SiteEditSession extends AbstractSiteToolSession {
 			String mime = params.get("MimeType");
 			if (mime == null)
 				mime = DefaultMIMETypes.guessMIMEType(fileName, false);
-			FileBucket bucket = new FileBucket(f, true, false, false, false, false);
+			FileBucket bucket = new FileBucket(f, true, false, false, false);
 			addItem(replysender, id, name, mime, bucket, false, true);
 			return;
 		}
@@ -129,7 +147,7 @@ public class SiteEditSession extends AbstractSiteToolSession {
 		return false;
 	}
 
-	private FreenetURI insert(PutWaiter pw) throws InsertException {
+	private FreenetURI insert(PutWaiter pw) throws InsertException, TooManyFilesInsertException {
 		RequestClient rc = new RequestClient() {
 			public boolean persistent() {
 				return false;
@@ -137,22 +155,22 @@ public class SiteEditSession extends AbstractSiteToolSession {
 			public boolean realTimeFlag() {
 				return false;
 			}
-			public void removeFrom(ObjectContainer container) {
-			}
-			
 		};
 		InsertContext iCtx = pluginContext.hlsc.getInsertContext(true);
 		iCtx.compressorDescriptor = "LZMA";
-		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, rc, false, false, null, null);
+		DefaultManifestPutter dmp = new DefaultManifestPutter(pw, data, (short) 1, insertURI, "index.html", iCtx, false, null, null);
 		if (pw instanceof VerboseWaiter) {
 			iCtx.eventProducer.addEventListener((VerboseWaiter)pw);
 			((VerboseWaiter) pw).setPutter(dmp);
 		}
+
 		try {
 			pluginContext.clientCore.clientContext.start(dmp);
-		} catch (DatabaseDisabledException e) {
-			// Impossible
+		} catch (PersistenceDisabledException e) {
+			// TODO FIXME
+			e.printStackTrace();
 		}
+
 		FreenetURI result = pw.waitForCompletion();
 		if (pw instanceof VerboseWaiter) {
 			iCtx.eventProducer.removeEventListener((VerboseWaiter)pw);
@@ -160,7 +178,7 @@ public class SiteEditSession extends AbstractSiteToolSession {
 		return result;
 	}
 
-	private synchronized boolean addItem(PluginReplySender replysender, String identifier, String name, String mimeOverride, Bucket item, boolean overwrite, boolean createpath) throws PluginNotFoundException {
+	private synchronized boolean addItem(PluginReplySender replysender, String identifier, String name, String mimeOverride, RandomAccessBucket item, boolean overwrite, boolean createpath) throws PluginNotFoundException {
 		int i = name.lastIndexOf("/");
 		String dirName;
 		String itemName;

@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-
-import com.db4o.ObjectContainer;
-
 import freenet.client.FetchContext;
 import freenet.client.FetchException;
 import freenet.client.FetchResult;
@@ -24,6 +21,7 @@ import freenet.keys.FreenetURI;
 import freenet.node.RequestClient;
 import freenet.node.RequestStarter;
 import freenet.support.Logger;
+import freenet.support.io.ResumeFailedException;
 
 public class SiteParser implements ClientGetCallback {
 	
@@ -31,11 +29,7 @@ public class SiteParser implements ClientGetCallback {
 		
 		private String lastProgress = "Starting";
 
-		public void onRemoveEventProducer(ObjectContainer container) {
-		}
-
-		public void receive(ClientEvent ce, ObjectContainer maybeContainer,
-				ClientContext context) {
+		public void receive(ClientEvent ce, ClientContext context) {
 			if (ce instanceof SplitfileProgressEvent) {
 				SplitfileProgressEvent spe = (SplitfileProgressEvent) ce;
 				lastProgress = spe.getDescription();
@@ -50,8 +44,7 @@ public class SiteParser implements ClientGetCallback {
 		Snooper() {
 		}
 
-		public boolean snoopMetadata(Metadata meta, ObjectContainer container,
-				ClientContext context) {
+		public boolean snoopMetadata(Metadata meta, ClientContext context) {
 			//metaSeen = true;
 			if (meta.isSimpleManifest()) {
 				_meta = meta;
@@ -95,11 +88,21 @@ public class SiteParser implements ClientGetCallback {
 			throw new IllegalStateException("getter2nameMap not empty on start!");
 		Snooper snooper = new Snooper();
 		FetchContext context = _hlsc.getFetchContext();
-		FetchWaiter fw = new FetchWaiter();
-		ClientGetter get = new ClientGetter(fw, _uri.setMetaString(new String[]{"fake"}), context, RequestStarter.INTERACTIVE_PRIORITY_CLASS, (RequestClient)_hlsc, null, null);
+		RequestClient rc = new RequestClient() {
+
+			public boolean persistent() {
+				return false;
+			}
+
+			public boolean realTimeFlag() {
+				return false;
+			}
+		};
+		FetchWaiter fw = new FetchWaiter(rc);
+		ClientGetter get = new ClientGetter(fw, _uri.setMetaString(new String[]{"fake"}), context, RequestStarter.INTERACTIVE_PRIORITY_CLASS, null, null);
 		get.setMetaSnoop(snooper);
 		try {
-			get.start(null, _clientContext);
+			get.start(_clientContext);
 			fw.waitForCompletion();
 		} catch (FetchException e) {
 			if (!e.isFatal()) {
@@ -109,7 +112,7 @@ public class SiteParser implements ClientGetCallback {
 
 		if (snooper._meta == null) {
 			// uri did not point to a SimpleManifest
-			throw new FetchException(FetchException.INVALID_METADATA, "URI does not point to a SimpleManifest");
+			throw new FetchException(FetchException.FetchExceptionMode.INVALID_METADATA, "URI does not point to a SimpleManifest");
 		}
 		HashMap<String, Metadata> docs = snooper._meta.getDocuments();
 		parseMetadata(docs, "/", _uri);
@@ -130,19 +133,19 @@ public class SiteParser implements ClientGetCallback {
 			ProgressMonitor pm = new ProgressMonitor();
 			context.eventProducer.addEventListener(pm);
 			_statusByName.put(tempName, pm);
-			ClientGetter get = new ClientGetter(this, uri.pushMetaString(name), context, RequestStarter.INTERACTIVE_PRIORITY_CLASS, (RequestClient)_hlsc, null, null);
+			ClientGetter get = new ClientGetter(this, uri.pushMetaString(name), context, RequestStarter.INTERACTIVE_PRIORITY_CLASS, null, null);
 			_getter2nameMap.put(get, tempName);
 			itemsTotal++;
 			itemsLeft++;
 			try {
-				get.start(null, _clientContext);
+				get.start(_clientContext);
 			} catch (FetchException e) {
-				onFailure(e, get, null);
+				onFailure(e, get);
 			}
 		}
 	}
 
-	public void onFailure(FetchException e, ClientGetter state, ObjectContainer container) {
+	public void onFailure(FetchException e, ClientGetter state) {
 		itemsError++;
 		String name = _getter2nameMap.get(state);
 		Logger.error(this, "500", e);
@@ -150,7 +153,7 @@ public class SiteParser implements ClientGetCallback {
 		removeGetter(state);
 	}
 
-	public void onSuccess(FetchResult result, ClientGetter state, ObjectContainer container) {
+	public void onSuccess(FetchResult result, ClientGetter state) {
 		itemsDone++;
 		String name = _getter2nameMap.get(state);
 		try {
@@ -164,7 +167,7 @@ public class SiteParser implements ClientGetCallback {
 		removeGetter(state);
 	}
 
-	public void onMajorProgress(ObjectContainer container) {
+	public void onMajorProgress() {
 		// ignore
 	}
 
@@ -196,7 +199,7 @@ public class SiteParser implements ClientGetCallback {
 
 	public void cancel(boolean wait) {
 		for (ClientGetter getter:_getter2nameMap.keySet()) {
-			getter.cancel(null, _clientContext);
+			getter.cancel(_clientContext);
 		}
 	}
 
@@ -221,5 +224,16 @@ public class SiteParser implements ClientGetCallback {
 			result.put(name, _statusByName.get(name).lastProgress);
 		}
 		return result;
+	}
+
+	public void onResume(ClientContext context) throws ResumeFailedException {
+		// TODO Auto-generated method stub
+		Logger.error(this, "TODO", new Error("TODO"));
+	}
+
+	public RequestClient getRequestClient() {
+		// TODO Auto-generated method stub
+		Logger.error(this, "TODO", new Error("TODO"));
+		return null;
 	}
 }

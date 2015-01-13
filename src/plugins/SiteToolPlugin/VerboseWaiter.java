@@ -1,13 +1,12 @@
 package plugins.SiteToolPlugin;
 
-import com.db4o.ObjectContainer;
-
 import freenet.client.PutWaiter;
 import freenet.client.async.BaseClientPutter;
 import freenet.client.async.ClientContext;
 import freenet.client.events.ClientEvent;
 import freenet.client.events.ClientEventListener;
 import freenet.keys.FreenetURI;
+import freenet.node.RequestClient;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
 import freenet.support.Logger;
@@ -18,8 +17,8 @@ public class VerboseWaiter extends PutWaiter implements ClientEventListener {
 	private final String _identifier;
 	private BaseClientPutter _putter;
 
-	public VerboseWaiter(PluginReplySender replysender, String identifier) {
-		super();
+	public VerboseWaiter(PluginReplySender replysender, String identifier, RequestClient reqestclient) {
+		super(reqestclient);
 		_replysender = replysender;
 		_identifier = identifier;
 	}
@@ -29,26 +28,26 @@ public class VerboseWaiter extends PutWaiter implements ClientEventListener {
 	}
 
 	@Override
-	public void onFetchable(BaseClientPutter state, ObjectContainer container) {
+	public void onFetchable(BaseClientPutter state) {
 		try {
 			FCPHandler.sendProgress(_replysender,  _identifier, "Put fetchable");
 		} catch (PluginNotFoundException e) {
 			// TODO Auto-generated catch block
-			_putter.cancel(container, null);
+			_putter.cancel(null);
 		}
 		Logger.error(this, "Put fetchable");
-		super.onFetchable(state, container);
+		super.onFetchable(state);
 	}
 
 	@Override
-	public synchronized void onGeneratedURI(FreenetURI uri, BaseClientPutter state, ObjectContainer container) {
+	public synchronized void onGeneratedURI(FreenetURI uri, BaseClientPutter state) {
 		Logger.debug(this, "Got UriGenerated: "+uri.toString(false, false));
 		try {
 			FCPHandler.sendProgress(_replysender,  _identifier, "Uri generated: "+uri.toString(false, false));
 		} catch (PluginNotFoundException e) {
-			_putter.cancel(container, null);
+			_putter.cancel(null);
 		}
-		super.onGeneratedURI(uri, state, container);
+		super.onGeneratedURI(uri, state);
 	}
 
 	// segment start/finish, ignore, we don't persist
@@ -58,17 +57,17 @@ public class VerboseWaiter extends PutWaiter implements ClientEventListener {
 //		super.onMajorProgress(container);
 //	}
 
-	public void onRemoveEventProducer(ObjectContainer container) {
+	public void onRemoveEventProducer() {
 		Logger.error(this, "TODO", new Exception("TODO"));
 	}
 
-	public void receive(ClientEvent ce, ObjectContainer maybeContainer, ClientContext context) {
+	public void receive(ClientEvent ce, ClientContext context) {
 		Logger.error(this, "Progress: "+ce.getDescription());
 		try {
 			FCPHandler.sendProgress(_replysender,  _identifier, ce.getDescription());
 		} catch (PluginNotFoundException e) {
 			Logger.error(this, "Could not send Progress", e);
-			_putter.cancel(maybeContainer, context);
+			_putter.cancel(context);
 		}
 	}
 }

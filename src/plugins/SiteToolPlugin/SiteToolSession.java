@@ -3,14 +3,14 @@ package plugins.SiteToolPlugin;
 import java.util.HashMap;
 import java.util.Set;
 
-import freenet.client.async.ManifestElement;
 import freenet.keys.FreenetURI;
 import freenet.pluginmanager.PluginNotFoundException;
 import freenet.pluginmanager.PluginReplySender;
 import freenet.pluginmanager.PluginRespirator;
 import freenet.support.Logger;
 import freenet.support.SimpleFieldSet;
-import freenet.support.api.Bucket;
+import freenet.support.api.ManifestElement;
+import freenet.support.api.RandomAccessBucket;
 
 public class SiteToolSession {
 	
@@ -70,7 +70,7 @@ public class SiteToolSession {
 		return null;
 	}
 
-	public void addItem(PluginReplySender replysender, String name, String mimeOverride, Bucket item, boolean overwrite, boolean createpath) throws PluginNotFoundException {
+	public void addItem(PluginReplySender replysender, String name, String mimeOverride, RandomAccessBucket item, boolean overwrite, boolean createpath) throws PluginNotFoundException {
 		int i = name.lastIndexOf("/");
 		String dirName;
 		String itemName;

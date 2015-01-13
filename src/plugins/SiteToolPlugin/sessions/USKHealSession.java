@@ -68,7 +68,7 @@ public class USKHealSession extends AbstractSiteToolSession {
 				pCtx.hlsc.insertRedirect(testUri, targetURI);
 				status.append("- healed\n");
 			} catch (InsertException e) {
-				if (e.getMode() == InsertException.COLLISION) {
+				if (e.getMode() == InsertException.InsertExceptionMode.COLLISION) {
 					status.append("- was ok\n");
 				} else {
 					status.append("- Error: ");

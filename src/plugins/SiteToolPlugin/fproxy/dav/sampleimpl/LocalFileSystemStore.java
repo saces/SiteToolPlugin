@@ -175,7 +175,7 @@ public class LocalFileSystemStore implements IWebDAVStore {
         File file = new File(_root, uri);
 
         FileBucket fb;
-        fb = new FileBucket(file, false, false, false, false, false);
+        fb = new FileBucket(file, false, false, false, false);
         return fb;
     }
 
